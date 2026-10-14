@@ -1,0 +1,22 @@
+{
+  "version": "0.1",
+  "default_environment": "default-env",
+  "default_region": "us-east-1",
+  "environments": {
+    "default-env": {
+      "stack_name": "finedge-backend-dev",
+      "resolve_s3": true,
+      "region": "us-east-1",
+      "confirm_changeset": true,
+      "capabilities": "CAPABILITY_IAM",
+      "parameter_overrides": [
+        "StageName=dev",
+        "DbHost=localhost",
+        "DbPort=3306",
+        "DbName=finedgedb",
+        "DbUsername=root",
+        "DbPassword=CHANGE_ME"
+      ]
+    }
+  }
+}

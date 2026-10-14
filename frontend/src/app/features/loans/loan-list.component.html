@@ -1,0 +1,56 @@
+<div class="page-head">
+  <div><h1>Loans</h1><p class="muted">{{ totalElements() }} total</p></div>
+  <a class="btn btn-primary" routerLink="/loans/new">+ New application</a>
+</div>
+
+<form class="toolbar" (ngSubmit)="onFilter()">
+  <label class="sr-only" for="loan-q">Search loans</label>
+  <input id="loan-q" name="search" [(ngModel)]="search" placeholder="Search application no, name, email…" />
+  <label class="sr-only" for="loan-type">Loan type</label>
+  <select id="loan-type" name="loanType" [(ngModel)]="loanType" (change)="onFilter()">
+    <option value="">All types</option>
+    @for (t of types; track t) { <option [value]="t">{{ t }}</option> }
+  </select>
+  <label class="sr-only" for="loan-status">Status</label>
+  <select id="loan-status" name="status" [(ngModel)]="status" (change)="onFilter()">
+    <option value="">All statuses</option>
+    @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
+  </select>
+  <button class="btn btn-secondary" type="submit">Search</button>
+</form>
+
+@if (loading()) {
+  <app-loading message="Loading loans…" />
+} @else if (error()) {
+  <div class="alert alert-error" role="alert">{{ error() }} <button class="btn btn-ghost" (click)="load()">Retry</button></div>
+} @else if (!items().length) {
+  <div class="card"><app-empty-state title="No loans found" icon="📝" /></div>
+} @else {
+  <div class="card table-wrap"><table>
+    <thead><tr><th>Application</th><th>Customer</th><th>Type</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      @for (l of items(); track l.id) {
+        <tr>
+          <td><a [routerLink]="['/loans', l.id]">{{ l.applicationNumber }}</a><div class="muted small">{{ l.tenureMonths }} mo · {{ l.interestRate }}%</div></td>
+          <td>{{ l.customerName }}<div class="muted small">{{ l.customerEmail }}</div></td>
+          <td><span class="badge">{{ l.loanType }}</span></td>
+          <td>{{ l.requestedAmount | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td><span class="badge status-{{ l.status }}">{{ l.status }}</span></td>
+          <td class="row-actions">
+            <a class="btn btn-ghost" [routerLink]="['/loans', l.id]">View</a>
+            <button class="btn btn-ghost danger" type="button" (click)="pendingDelete = l">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table></div>
+  <div class="pager">
+    <button class="btn btn-ghost" (click)="page = page - 1; load()" [disabled]="page === 0">← Prev</button>
+    <span>Page {{ page + 1 }} of {{ totalPages() }}</span>
+    <button class="btn btn-ghost" (click)="page = page + 1; load()" [disabled]="page + 1 >= totalPages()">Next →</button>
+  </div>
+}
+
+@if (pendingDelete) {
+  <app-confirm-dialog title="Delete loan?" [message]="'Delete application ' + pendingDelete.applicationNumber + '?'" (confirmed)="confirmDelete()" (cancelled)="pendingDelete = null" />
+}

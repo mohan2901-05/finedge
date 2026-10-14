@@ -1,0 +1,119 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  FinEdge Finance Management Portal - AWS SAM Template
+  Deploys Spring Boot 3 backend as a Lambda function behind API Gateway.
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 1024
+    Runtime: java17
+    Architectures:
+      - x86_64
+
+Parameters:
+  StageName:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, staging, prod]
+    Description: API Gateway deployment stage
+
+  DbHost:
+    Type: String
+    Description: MySQL/RDS endpoint hostname
+
+  DbPort:
+    Type: String
+    Default: "3306"
+    Description: MySQL port
+
+  DbName:
+    Type: String
+    Default: finedgedb
+    Description: Database name
+
+  DbUsername:
+    Type: String
+    Description: Database username
+
+  DbPassword:
+    Type: String
+    NoEcho: true
+    Description: Database password
+
+  CorsAllowedOrigins:
+    Type: String
+    Default: "http://localhost:4200"
+    Description: Comma-separated CORS origins
+
+Resources:
+  FinEdgeLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub finedge-backend-${StageName}
+      Handler: com.finedge.lambda.StreamLambdaHandler::handleRequest
+      CodeUri: backend/target/finedge-backend-1.0.0-SNAPSHOT.jar
+      AutoPublishAlias: live
+      SnapStart:
+        ApplyOn: PublishedVersions
+      Environment:
+        Variables:
+          SPRING_PROFILES_ACTIVE: lambda
+          DB_HOST: !Ref DbHost
+          DB_PORT: !Ref DbPort
+          DB_NAME: !Ref DbName
+          DB_USERNAME: !Ref DbUsername
+          DB_PASSWORD: !Ref DbPassword
+          FINEDGE_CORS_ALLOWED_ORIGINS: !Ref CorsAllowedOrigins
+      Events:
+        ApiProxy:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+            RestApiId: !Ref FinEdgeApi
+        ApiRoot:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+            RestApiId: !Ref FinEdgeApi
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - rds-db:connect
+              Resource: "*"
+      VpcConfig:
+        # Uncomment and configure when deploying with RDS in a VPC
+        # SecurityGroupIds:
+        #   - sg-xxxxxxxxxxxxxxxxx
+        # SubnetIds:
+        #   - subnet-xxxxxxxxxxxxxxxxx
+        #   - subnet-yyyyyyyyyyyyyyyyy
+
+  FinEdgeApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref StageName
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization,X-Requested-With'"
+        AllowOrigin: !Sub "'${CorsAllowedOrigins}'"
+        AllowCredentials: true
+
+Outputs:
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${FinEdgeApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/"
+
+  LambdaFunctionArn:
+    Description: Lambda function ARN
+    Value: !GetAtt FinEdgeLambdaFunction.Arn
+
+  LambdaFunctionName:
+    Description: Lambda function name
+    Value: !Ref FinEdgeLambdaFunction

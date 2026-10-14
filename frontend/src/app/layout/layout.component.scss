@@ -1,0 +1,29 @@
+.shell { display: flex; min-height: 100dvh; }
+.sidebar { width: 220px; background: #0f172a; color: #e2e8f0; display: flex; flex-direction: column; padding: 1rem .75rem; gap: 1rem; transition: width .2s; }
+.shell.collapsed .sidebar { width: 64px; }
+.brand { display: flex; align-items: center; gap: .5rem; font-weight: 700; font-size: 1.15rem; }
+.brand-mark { color: var(--primary-light); font-size: 1.5rem; }
+nav { display: flex; flex-direction: column; gap: .25rem; }
+.nav-link { display: flex; align-items: center; gap: .6rem; padding: .6rem .75rem; border-radius: 8px; color: #cbd5e1; text-decoration: none; }
+.nav-link:hover { background: rgba(255,255,255,.08); color: #fff; }
+.nav-link.active { background: var(--primary); color: #fff; }
+.collapse-btn { margin-top: auto; color: #cbd5e1; }
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.topnav { display: flex; align-items: center; gap: 1rem; padding: .75rem 1.25rem; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+.search { flex: 1; max-width: 420px; }
+.search input { width: 100%; padding: .55rem .8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); }
+.top-actions { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+.profile { font-weight: 600; }
+.content { padding: 1.5rem; max-width: 1200px; width: 100%; margin: 0 auto; }
+.toasts { position: fixed; bottom: 1rem; right: 1rem; display: flex; flex-direction: column; gap: .5rem; z-index: 80; }
+.toast { display: flex; align-items: center; gap: .75rem; background: #0f172a; color: #fff; padding: .7rem 1rem; border-radius: 10px; box-shadow: var(--shadow); }
+.toast-success { border-left: 4px solid #22c55e; }
+.toast-error { border-left: 4px solid #ef4444; }
+.toast-info { border-left: 4px solid #3b82f6; }
+.toast button { background: none; border: 0; color: #fff; cursor: pointer; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+@media (max-width: 768px) {
+  .sidebar { position: fixed; z-index: 40; height: 100dvh; transform: translateX(0); }
+  .shell.collapsed .sidebar { transform: translateX(-100%); width: 220px; }
+  .content { padding: 1rem; }
+}

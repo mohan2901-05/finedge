@@ -1,0 +1,80 @@
+<div class="page-head">
+  <h1>Dashboard</h1>
+  <p class="muted">Overview of customers, accounts, transactions and loans.</p>
+</div>
+
+@if (loading()) {
+  <app-loading message="Loading dashboard…" />
+} @else if (error()) {
+  <div class="alert alert-error" role="alert">{{ error() }}</div>
+} @else if (summary(); as s) {
+  <section class="cards" aria-label="Key metrics">
+    <div class="card stat"><span class="stat-label">Customers</span><strong>{{ s.totalCustomers }}</strong><a routerLink="/customers">View →</a></div>
+    <div class="card stat"><span class="stat-label">Active accounts</span><strong>{{ s.activeAccounts }}</strong><a routerLink="/accounts">View →</a></div>
+    <div class="card stat"><span class="stat-label">Total deposits</span><strong>{{ s.totalDeposits | currency:'USD':'symbol':'1.2-2' }}</strong><a routerLink="/transactions">View →</a></div>
+    <div class="card stat warn"><span class="stat-label">Pending loans</span><strong>{{ s.pendingLoans }}</strong><a routerLink="/loans">Review →</a></div>
+    <div class="card stat ok"><span class="stat-label">Approved loans</span><strong>{{ s.approvedLoans }}</strong></div>
+    <div class="card stat bad"><span class="stat-label">Rejected loans</span><strong>{{ s.rejectedLoans }}</strong></div>
+  </section>
+
+  <div class="grid-2">
+    <section class="card" aria-label="Monthly volume">
+      <h2>Monthly volume</h2>
+      @if (volumeEntries().length) {
+        <div class="bars">
+          @for (entry of volumeEntries(); track entry[0]) {
+            <div class="bar-row">
+              <span class="bar-label">{{ entry[0] }}</span>
+              <div class="bar-track"><div class="bar-fill" [style.width.%]="maxVolume() ? (entry[1] / maxVolume() * 100) : 0"></div></div>
+              <span class="bar-value">{{ entry[1] | currency:'USD':'symbol':'1.0-0' }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <app-empty-state title="No volume data" message="Monthly volume will appear here." icon="📈" />
+      }
+    </section>
+
+    <section class="card" aria-label="Distributions">
+      <h2>Loans by status</h2>
+      <div class="chips">
+        @for (entry of loanStatusEntries(); track entry[0]) {
+          <span class="badge status-{{ entry[0] }}">{{ entry[0] }} · {{ entry[1] }}</span>
+        } @empty {
+          <span class="muted">No loan data.</span>
+        }
+      </div>
+      <h2>Accounts by type</h2>
+      <div class="chips">
+        @for (entry of accountTypeEntries(); track entry[0]) {
+          <span class="badge badge-type">{{ entry[0] }} · {{ entry[1] }}</span>
+        } @empty {
+          <span class="muted">No account data.</span>
+        }
+      </div>
+    </section>
+  </div>
+
+  <section class="card" aria-label="Recent transactions">
+    <div class="card-head"><h2>Recent transactions</h2><a routerLink="/transactions">View all →</a></div>
+    @if (recent().length) {
+      <div class="table-wrap"><table>
+        <thead><tr><th>Reference</th><th>Account</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>
+          @for (t of recent(); track t.id) {
+            <tr>
+              <td>{{ t.transactionReference }}</td>
+              <td>{{ t.accountNumber }}</td>
+              <td><span class="badge">{{ t.transactionType }}</span></td>
+              <td>{{ t.amount | currency:'USD':'symbol':'1.2-2' }}</td>
+              <td><span class="badge status-{{ t.status }}">{{ t.status }}</span></td>
+              <td>{{ t.transactionDate | date:'short' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table></div>
+    } @else {
+      <app-empty-state title="No recent transactions" icon="💸" />
+    }
+  </section>
+}

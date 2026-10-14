@@ -1,0 +1,46 @@
+<div class="shell" [class.collapsed]="collapsed()">
+  <aside class="sidebar" aria-label="Primary navigation">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">⬢</span>
+      @if (!collapsed()) { <span class="brand-name">FinEdge</span> }
+    </div>
+    <nav>
+      @for (item of nav; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active" class="nav-link" [attr.aria-label]="item.label" [title]="item.label">
+          <span aria-hidden="true">{{ item.icon }}</span>
+          @if (!collapsed()) { <span>{{ item.label }}</span> }
+        </a>
+      }
+    </nav>
+    <button type="button" class="btn btn-ghost collapse-btn" (click)="toggleSidebar()" [attr.aria-label]="collapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+      {{ collapsed() ? '»' : '«' }}
+    </button>
+  </aside>
+
+  <div class="main">
+    <header class="topnav">
+      <button type="button" class="btn btn-ghost menu-btn" (click)="toggleSidebar()" aria-label="Toggle sidebar">☰</button>
+      <form class="search" (ngSubmit)="onSearch()" role="search">
+        <label class="sr-only" for="global-search">Search customers</label>
+        <input id="global-search" name="globalSearch" [(ngModel)]="globalSearch" placeholder="Search customers…" autocomplete="off" />
+      </form>
+      <div class="top-actions">
+        <span class="bell" role="img" aria-label="Notifications">🔔</span>
+        <span class="profile" aria-label="Admin profile">👤 Admin</span>
+      </div>
+    </header>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+<div class="toasts" aria-live="polite">
+  @for (t of (toasts$ | async); track t.id) {
+    <div class="toast" [class]="'toast toast-' + t.kind">
+      <span>{{ t.message }}</span>
+      <button type="button" aria-label="Dismiss notification" (click)="dismissToast(t.id)">✕</button>
+    </div>
+  }
+</div>

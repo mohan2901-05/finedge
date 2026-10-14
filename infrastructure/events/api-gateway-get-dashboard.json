@@ -1,0 +1,26 @@
+{
+  "httpMethod": "GET",
+  "path": "/api/dashboard/summary",
+  "headers": {
+    "Accept": "application/json",
+    "Host": "localhost"
+  },
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "accountId": "123456789012",
+    "resourceId": "abc123",
+    "stage": "dev",
+    "requestId": "test-request-001",
+    "identity": {
+      "sourceIp": "127.0.0.1",
+      "userAgent": "curl/7.88.1"
+    },
+    "resourcePath": "/api/dashboard/summary",
+    "httpMethod": "GET",
+    "apiId": "testapi123"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}

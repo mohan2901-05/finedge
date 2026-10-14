@@ -1,0 +1,45 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.finedge:finedge-backend >---------------------
+[INFO] Building finedge-backend 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ finedge-backend ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ finedge-backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ finedge-backend ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ finedge-backend ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 8 source files with javac [debug release 17] to target\test-classes
+[INFO] Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /D:/projects/finedge/backend/src/test/java/com/finedge/lambda/StreamLambdaHandlerTest.java:[35,39] incompatible types: cannot infer type arguments for java.util.HashMap<>
+    reason: no instance(s) of type variable(s) K,V exist so that java.util.HashMap<K,V> conforms to com.amazonaws.serverless.proxy.model.SingleValueHeaders
+[INFO] 1 error
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  4.324 s
+[INFO] Finished at: 2026-10-09T14:10:48+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:testCompile (default-testCompile) on project finedge-backend: Compilation failure
+[ERROR] /D:/projects/finedge/backend/src/test/java/com/finedge/lambda/StreamLambdaHandlerTest.java:[35,39] incompatible types: cannot infer type arguments for java.util.HashMap<>
+[ERROR]     reason: no instance(s) of type variable(s) K,V exist so that java.util.HashMap<K,V> conforms to com.amazonaws.serverless.proxy.model.SingleValueHeaders
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

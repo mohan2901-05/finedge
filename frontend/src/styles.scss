@@ -1,0 +1,137 @@
+:root {
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --primary: #1d4ed8;
+  --primary-light: #60a5fa;
+  --primary-dark: #1e3a8a;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warn: #d97706;
+  --shadow: 0 1px 3px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.08);
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1 { font-size: 1.6rem; margin: 0; }
+h2 { font-size: 1.1rem; margin: 0 0 0.75rem; }
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.muted { color: var(--muted); }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.table-wrap { overflow-x: auto; padding: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th, td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.04em; background: #f8fafc; }
+tbody tr:hover { background: #f8fafc; }
+.card.table-wrap td:first-child, .card.table-wrap th:first-child { padding-left: 1.25rem; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); text-decoration: none; color: #fff; }
+.btn-secondary { background: #e0e7ff; color: var(--primary-dark); }
+.btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.btn-ghost:hover { background: #f1f5f9; text-decoration: none; }
+.btn-danger { background: #fee2e2; color: var(--danger); border-color: #fecaca; }
+.btn-ghost.danger { color: var(--danger); }
+
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+input, select {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: var(--surface);
+  color: var(--text);
+  min-width: 0;
+}
+input:focus, select:focus, button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--primary-light);
+  outline-offset: 1px;
+}
+.toolbar input { flex: 1; min-width: 200px; }
+
+.field { display: flex; flex-direction: column; gap: 0.3rem; }
+.field label { font-weight: 600; font-size: 0.85rem; }
+.field-error { color: var(--danger); font-size: 0.8rem; }
+.form-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem; }
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: #e2e8f0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.badge-type { background: #dbeafe; color: #1e40af; }
+.status-ACTIVE, .status-COMPLETED, .status-APPROVED { background: #dcfce7; color: #166534; }
+.status-PENDING { background: #fef9c3; color: #854d0e; }
+.status-REJECTED, .status-FAILED { background: #fee2e2; color: #991b1b; }
+.status-DORMANT, .status-FROZEN, .status-SUSPENDED, .status-INACTIVE, .status-CLOSED, .status-REVERSED { background: #e2e8f0; color: #475569; }
+
+.alert { padding: 0.8rem 1rem; border-radius: 8px; margin-bottom: 1rem; }
+.alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+.pager { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 0.75rem; color: var(--muted); }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+  .card { padding: 1rem; }
+  .page-head { flex-direction: column; }
+}

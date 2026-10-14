@@ -1,0 +1,65 @@
+<div class="page-head">
+  <h1>{{ isEdit() ? 'Edit customer' : 'New customer' }}</h1>
+  <a class="btn btn-ghost" routerLink="/customers">← Back</a>
+</div>
+
+@if (loading() && isEdit() && !form.dirty) {
+  <app-loading message="Loading customer…" />
+}
+
+@if (error()) { <div class="alert alert-error" role="alert">{{ error() }}</div> }
+
+<form class="card form-grid" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <div class="field">
+    <label for="firstName">First name</label>
+    <input id="firstName" formControlName="firstName" autocomplete="given-name" />
+    @if (fieldInvalid('firstName')) { <span class="field-error">First name is required (2–50 chars).</span> }
+  </div>
+  <div class="field">
+    <label for="lastName">Last name</label>
+    <input id="lastName" formControlName="lastName" autocomplete="family-name" />
+    @if (fieldInvalid('lastName')) { <span class="field-error">Last name is required (2–50 chars).</span> }
+  </div>
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" autocomplete="email" />
+    @if (fieldInvalid('email')) { <span class="field-error">Enter a valid email.</span> }
+  </div>
+  <div class="field">
+    <label for="phone">Phone</label>
+    <input id="phone" formControlName="phone" autocomplete="tel" />
+    @if (fieldInvalid('phone')) { <span class="field-error">Enter a valid phone number.</span> }
+  </div>
+  <div class="field full">
+    <label for="address">Address</label>
+    <input id="address" formControlName="address" autocomplete="street-address" />
+    @if (fieldInvalid('address')) { <span class="field-error">Address is required.</span> }
+  </div>
+  <div class="field">
+    <label for="city">City</label>
+    <input id="city" formControlName="city" autocomplete="address-level2" />
+    @if (fieldInvalid('city')) { <span class="field-error">City is required.</span> }
+  </div>
+  <div class="field">
+    <label for="state">State</label>
+    <input id="state" formControlName="state" autocomplete="address-level1" />
+    @if (fieldInvalid('state')) { <span class="field-error">State is required.</span> }
+  </div>
+  <div class="field">
+    <label for="postalCode">Postal code</label>
+    <input id="postalCode" formControlName="postalCode" autocomplete="postal-code" />
+    @if (fieldInvalid('postalCode')) { <span class="field-error">Postal code is required (2–20 chars).</span> }
+  </div>
+  <div class="field">
+    <label for="status">Status</label>
+    <select id="status" formControlName="status">
+      <option value="ACTIVE">ACTIVE</option>
+      <option value="INACTIVE">INACTIVE</option>
+      <option value="SUSPENDED">SUSPENDED</option>
+    </select>
+  </div>
+  <div class="form-actions full">
+    <a class="btn btn-ghost" routerLink="/customers">Cancel</a>
+    <button class="btn btn-primary" type="submit" [disabled]="loading()">{{ isEdit() ? 'Save changes' : 'Create customer' }}</button>
+  </div>
+</form>
