@@ -1,0 +1,31 @@
+<div class="page-head">
+  <div><h1>{{ isEdit() ? 'Edit organization' : 'New organization' }}</h1></div>
+  <a class="btn btn-ghost" routerLink="/orgs">← Back to list</a>
+</div>
+
+@if (loading() && isEdit()) {
+  <app-loading message="Loading organization…" />
+} @else {
+  <form class="card form" [formGroup]="form" (ngSubmit)="submit()">
+    @if (error()) { <div class="alert alert-error" role="alert">{{ error() }}</div> }
+    <label>Organization name
+      <input formControlName="orgName" maxlength="100" />
+      @if (fieldInvalid('orgName')) { <span class="field-error">Name is required (max 100).</span> }
+      @if (serverError('orgName')) { <span class="field-error">{{ serverError('orgName') }}</span> }
+    </label>
+    <label>Email
+      <input formControlName="orgEmail" type="email" maxlength="50" />
+      @if (fieldInvalid('orgEmail')) { <span class="field-error">A valid email is required.</span> }
+      @if (serverError('orgEmail')) { <span class="field-error">{{ serverError('orgEmail') }}</span> }
+    </label>
+    <label>Status
+      <select formControlName="status">
+        <option value="ACTIVE">Active</option>
+        <option value="INACTIVE">Inactive</option>
+      </select>
+    </label>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit" [disabled]="loading()">{{ loading() ? 'Saving…' : (isEdit() ? 'Save changes' : 'Create') }}</button>
+    </div>
+  </form>
+}

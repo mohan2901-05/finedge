@@ -20,15 +20,16 @@
   <div class="main">
     <header class="topnav">
       <button type="button" class="btn btn-ghost menu-btn" (click)="toggleSidebar()" aria-label="Toggle sidebar">☰</button>
-      <form class="search" (ngSubmit)="onSearch()" role="search">
-        <label class="sr-only" for="global-search">Search customers</label>
-        <input id="global-search" name="globalSearch" [(ngModel)]="globalSearch" placeholder="Search customers…" autocomplete="off" />
-      </form>
       <div class="top-actions">
         <span class="bell" role="img" aria-label="Notifications">🔔</span>
-        <span class="profile" aria-label="Admin profile">👤 Admin</span>
+        <span class="profile" aria-label="Local developer profile">👤 Local dev</span>
       </div>
     </header>
+
+    <div class="dev-banner" role="note">
+      Local development — the API is unauthenticated and role assignments are records only, not enforced.
+      Do not expose this build beyond localhost.
+    </div>
 
     <main class="content">
       <router-outlet />

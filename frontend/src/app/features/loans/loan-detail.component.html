@@ -1,59 +1,77 @@
 @if (loading()) {
   <app-loading message="Loading loan…" />
-} @else if (error() && !loan()) {
-  <div class="alert alert-error" role="alert">{{ error() }}</div>
-} @else if (loan(); as l) {
+} @else if (error() || !loan()) {
+  <div class="alert alert-error" role="alert">{{ error() || 'Loan not found.' }} <a class="btn btn-ghost" routerLink="/loans">Back to list</a></div>
+} @else {
   <div class="page-head">
-    <div><h1>{{ l.applicationNumber }}</h1><p class="muted">{{ l.customerName }} · {{ l.customerEmail }}</p></div>
-    <div class="head-actions">
-      <a class="btn btn-ghost" routerLink="/loans">← Back</a>
-      <button class="btn btn-danger" type="button" (click)="confirmDelete = true">Delete</button>
+    <div><h1>{{ loan()?.loanId }}</h1><p class="muted">{{ loan()?.loanAmount }} · {{ loan()?.tenureMonths }} months · {{ loan()?.interestRate }}% · <span class="badge">{{ loan()?.status }}</span> · Received: {{ loan()?.received ? 'Yes' : 'No' }}</p></div>
+    <div class="row-actions">
+      <a class="btn btn-ghost" [routerLink]="['/loans', loan()?.loanId, 'edit']">Edit</a>
+      <button class="btn btn-ghost danger" type="button" (click)="confirmDelete = true">Delete</button>
     </div>
   </div>
 
-  @if (error()) { <div class="alert alert-error" role="alert">{{ error() }}</div> }
-
-  <div class="grid-2">
-    <section class="card">
-      <h2>Application</h2>
-      <dl class="dl">
-        <div><dt>Type</dt><dd>{{ l.loanType }}</dd></div>
-        <div><dt>Amount</dt><dd>{{ l.requestedAmount | currency:'USD':'symbol':'1.2-2' }}</dd></div>
-        <div><dt>Rate</dt><dd>{{ l.interestRate }}%</dd></div>
-        <div><dt>Tenure</dt><dd>{{ l.tenureMonths }} months</dd></div>
-        <div><dt>Purpose</dt><dd>{{ l.purpose }}</dd></div>
-        <div><dt>Status</dt><dd><span class="badge status-{{ l.status }}">{{ l.status }}</span></dd></div>
-        <div><dt>Applied</dt><dd>{{ l.applicationDate | date:'mediumDate' }}</dd></div>
-        @if (l.reviewedBy) { <div><dt>Reviewed by</dt><dd>{{ l.reviewedBy }}</dd></div> }
-        @if (l.rejectionReason) { <div><dt>Rejection reason</dt><dd>{{ l.rejectionReason }}</dd></div> }
-        <div><dt>Customer</dt><dd><a [routerLink]="['/customers', l.customerId]">{{ l.customerName }}</a></dd></div>
-      </dl>
-    </section>
-    <section class="card">
-      <h2>Review</h2>
-      <form [formGroup]="reviewForm" (ngSubmit)="review()" class="review-form">
-        <div class="field">
-          <label for="status">Decision</label>
-          <select id="status" formControlName="status">
-            <option value="APPROVED">APPROVED</option>
-            <option value="REJECTED">REJECTED</option>
-            <option value="PENDING">PENDING</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="reviewedBy">Reviewed by</label>
-          <input id="reviewedBy" formControlName="reviewedBy" placeholder="Officer name" />
-        </div>
-        <div class="field">
-          <label for="rejectionReason">Rejection reason (required if rejected)</label>
-          <input id="rejectionReason" formControlName="rejectionReason" placeholder="Reason…" />
-        </div>
-        <button class="btn btn-primary" type="submit" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Submit review' }}</button>
-      </form>
-    </section>
+  <div class="card">
+    <dl class="facts">
+      <div><dt>Purpose</dt><dd>{{ loan()?.purpose || '—' }}</dd></div>
+      <div><dt>Outstanding</dt><dd>{{ loan()?.outstandingAmount ?? '—' }}</dd></div>
+      <div><dt>Applied</dt><dd>{{ loan()?.applicationDate || '—' }}</dd></div>
+      <div><dt>Approved</dt><dd>{{ loan()?.approvalDate || '—' }}</dd></div>
+      <div><dt>Disbursed</dt><dd>{{ loan()?.disbursementDate || '—' }}</dd></div>
+      <div><dt>Due</dt><dd>{{ loan()?.dueDate || '—' }}</dd></div>
+    </dl>
   </div>
 
+  <div class="tabs" role="tablist">
+    <button class="btn btn-ghost" [class.active]="tab === 'activities'" (click)="tab = 'activities'" role="tab">Activity ({{ activities().length }})</button>
+    <button class="btn btn-ghost" [class.active]="tab === 'repayments'" (click)="tab = 'repayments'" role="tab">Repayments ({{ repayments().length }})</button>
+    <button class="btn btn-ghost" [class.active]="tab === 'collections'" (click)="tab = 'collections'" role="tab">Collections ({{ collections().length }})</button>
+  </div>
+
+  @if (tab === 'activities') {
+    <div class="card table-wrap">
+      @if (!activities().length) {
+        <app-empty-state title="No activity recorded" message="Stage entries for this loan will appear here." icon="📋" />
+      } @else {
+        <table><thead><tr><th>Stage</th><th>Status</th><th>By</th><th>At</th></tr></thead>
+        <tbody>
+          @for (a of activities(); track a.activityId) {
+            <tr><td>{{ a.activityCode }}</td><td>{{ a.statusCode }}</td><td>{{ a.userId }}</td><td>{{ a.updatedOn }}</td></tr>
+          }
+        </tbody></table>
+      }
+    </div>
+  } @else if (tab === 'repayments') {
+    <div class="card table-wrap">
+      @if (!repayments().length) {
+        <app-empty-state title="No schedule rows" message="Installments are shown in due order when present." icon="🗓️" />
+      } @else {
+        <table><thead><tr><th>#</th><th>Due</th><th>EMI</th><th>Principal</th><th>Interest</th><th>Closing</th></tr></thead>
+        <tbody>
+          @for (r of repayments(); track r.repaymentId) {
+            <tr><td>{{ r.installmentNumber }}</td><td>{{ r.dueDate }}</td><td>{{ r.installmentAmount }}</td><td>{{ r.principal }}</td><td>{{ r.interest }}</td><td>{{ r.closingPrincipal }}</td></tr>
+          }
+        </tbody></table>
+      }
+    </div>
+  } @else {
+    <div class="card table-wrap">
+      @if (!collections().length) {
+        <app-empty-state title="No collections" message="Cash-in records for this loan will appear here." icon="💵" />
+      } @else {
+        <table><thead><tr><th>ID</th><th>Amount</th><th>Date</th><th>Mode</th><th>Status</th></tr></thead>
+        <tbody>
+          @for (c of collections(); track c.collectionId) {
+            <tr><td>{{ c.collectionId }}</td><td>{{ c.collectionAmount }}</td><td>{{ c.collectionDate }}</td><td>{{ c.paymentMode }}</td><td>{{ c.status }}</td></tr>
+          }
+        </tbody></table>
+      }
+    </div>
+  }
+
   @if (confirmDelete) {
-    <app-confirm-dialog title="Delete loan?" [message]="'Delete application ' + l.applicationNumber + '?'" (confirmed)="delete()" (cancelled)="confirmDelete = false" />
+    <app-confirm-dialog title="Delete loan?"
+      message="Its activity history, repayment schedule and collections will also be deleted by the database. This cannot be undone."
+      (confirmed)="delete()" (cancelled)="confirmDelete = false" />
   }
 }

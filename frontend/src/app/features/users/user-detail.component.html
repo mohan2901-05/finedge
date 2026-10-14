@@ -1,0 +1,46 @@
+@if (loading()) {
+  <app-loading message="Loading user…" />
+} @else if (error() || !user()) {
+  <div class="alert alert-error" role="alert">{{ error() || 'User not found.' }} <a class="btn btn-ghost" routerLink="/users">Back to list</a></div>
+} @else {
+  <div class="page-head">
+    <div><h1>{{ user()?.userName }}</h1><p class="muted">{{ user()?.userId }} · {{ user()?.userEmail }} · {{ user()?.roleName || user()?.roleId }} · <span class="badge status-{{ user()?.status }}">{{ user()?.status }}</span></p></div>
+    <div class="row-actions">
+      <a class="btn btn-ghost" [routerLink]="['/users', user()?.userId, 'edit']">Edit</a>
+      <button class="btn btn-ghost danger" type="button" (click)="confirmDelete = true">Delete</button>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Loans ({{ loansList().length }})</h2>
+      @if (!loansList().length) {
+        <app-empty-state title="No loans" message="Loans for this user will appear here." icon="💰" />
+      } @else {
+        <ul class="link-list">
+          @for (l of loansList(); track l.loanId) {
+            <li><a [routerLink]="['/loans', l.loanId]">{{ l.loanId }}</a> <span class="muted small">{{ l.status }}</span></li>
+          }
+        </ul>
+      }
+    </div>
+    <div class="card">
+      <h2>Recent activity</h2>
+      @if (!auditList().length) {
+        <app-empty-state title="No audit entries" message="Recorded actions for this user will appear here." icon="📋" />
+      } @else {
+        <ul class="link-list">
+          @for (a of auditList(); track a.auditId) {
+            <li>{{ a.action }} <span class="muted small">{{ a.createdDatetime }}</span></li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+
+  @if (confirmDelete) {
+    <app-confirm-dialog title="Delete user?"
+      message="Their loans, collections and audit rows will also be deleted by the database. This cannot be undone."
+      (confirmed)="delete()" (cancelled)="confirmDelete = false" />
+  }
+}

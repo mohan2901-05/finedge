@@ -1,127 +1,203 @@
 package com.finedge.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Entity for {@code loan_applications} (loan intake staging table).
+ *
+ * <p>The only auto-increment key in the dump: {@code id INT AUTO_INCREMENT}.
+ * {@code ref} is the unique business reference (e.g. {@code MF-...}).
+ * Persisted financial figures ({@code emi}, {@code total_interest},
+ * {@code total_payable}) are stored as supplied — never recalculated here
+ * (senior Q7). {@code status} is free text in the dump
+ * ({@code 'Pending Review'} default), so it is mapped as {@code String},
+ * not an enum.
+ *
+ * <p>Deliberately no foreign keys: the dump declares none for this table,
+ * and no intake→loan relationship is invented (senior Q3). Any workflow
+ * linking an intake row to {@code loan_info} must be confirmed before it
+ * is modelled.
+ */
 @Entity
 @Table(name = "loan_applications")
 public class LoanApplication {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false, updatable = false)
+    private Integer id;
 
-    @Column(name = "application_number", nullable = false, unique = true, length = 32)
-    private String applicationNumber;
+    @Column(name = "ref", length = 50, nullable = false, unique = true)
+    private String ref;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @Column(name = "cust_name", length = 100, nullable = false)
+    private String customerName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "loan_type", nullable = false, length = 30)
-    private LoanType loanType;
+    @Column(name = "cust_phone", length = 15, nullable = false)
+    private String customerPhone;
 
-    @Column(name = "requested_amount", nullable = false, precision = 15, scale = 2)
-    private BigDecimal requestedAmount;
+    @Column(name = "cust_email", length = 100, nullable = false)
+    private String customerEmail;
 
-    @Column(name = "interest_rate", nullable = false, precision = 5, scale = 2)
-    private BigDecimal interestRate;
+    @Column(name = "cust_dob")
+    private LocalDate customerDob;
+
+    @Column(name = "cust_pan", length = 20)
+    private String customerPan;
+
+    @Column(name = "cust_city", length = 100, nullable = false)
+    private String customerCity;
+
+    @Column(name = "cust_address", length = 255, nullable = false)
+    private String customerAddress;
+
+    @Column(name = "financier_key", length = 50, nullable = false)
+    private String financierKey;
+
+    @Column(name = "financier_label", length = 100, nullable = false)
+    private String financierLabel;
+
+    @Column(name = "loan_amount", precision = 15, scale = 2, nullable = false)
+    private BigDecimal loanAmount;
 
     @Column(name = "tenure_months", nullable = false)
     private Integer tenureMonths;
 
-    @Column(nullable = false, length = 255)
-    private String purpose;
+    @Column(name = "interest_rate", precision = 5, scale = 2, nullable = false)
+    private BigDecimal interestRate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private LoanStatus status = LoanStatus.PENDING;
+    @Column(name = "emi", precision = 15, scale = 2, nullable = false)
+    private BigDecimal emi;
 
-    @Column(name = "application_date", nullable = false)
-    private LocalDate applicationDate;
+    @Column(name = "total_interest", precision = 15, scale = 2, nullable = false)
+    private BigDecimal totalInterest;
 
-    @Column(name = "reviewed_by", length = 100)
-    private String reviewedBy;
+    @Column(name = "total_payable", precision = 15, scale = 2, nullable = false)
+    private BigDecimal totalPayable;
 
-    @Column(name = "rejection_reason", length = 255)
-    private String rejectionReason;
+    @Column(name = "status", length = 30, nullable = false)
+    private String status = "Pending Review";
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
 
     public LoanApplication() {
     }
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-        if (this.applicationDate == null) {
-            this.applicationDate = LocalDate.now();
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
         }
         if (this.status == null) {
-            this.status = LoanStatus.PENDING;
+            this.status = "Pending Review";
         }
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    // Getters and Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getApplicationNumber() {
-        return applicationNumber;
+    public String getRef() {
+        return ref;
     }
 
-    public void setApplicationNumber(String applicationNumber) {
-        this.applicationNumber = applicationNumber;
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
-    public LoanType getLoanType() {
-        return loanType;
+    public String getCustomerPhone() {
+        return customerPhone;
     }
 
-    public void setLoanType(LoanType loanType) {
-        this.loanType = loanType;
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
     }
 
-    public BigDecimal getRequestedAmount() {
-        return requestedAmount;
+    public String getCustomerEmail() {
+        return customerEmail;
     }
 
-    public void setRequestedAmount(BigDecimal requestedAmount) {
-        this.requestedAmount = requestedAmount;
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
     }
 
-    public BigDecimal getInterestRate() {
-        return interestRate;
+    public LocalDate getCustomerDob() {
+        return customerDob;
     }
 
-    public void setInterestRate(BigDecimal interestRate) {
-        this.interestRate = interestRate;
+    public void setCustomerDob(LocalDate customerDob) {
+        this.customerDob = customerDob;
+    }
+
+    public String getCustomerPan() {
+        return customerPan;
+    }
+
+    public void setCustomerPan(String customerPan) {
+        this.customerPan = customerPan;
+    }
+
+    public String getCustomerCity() {
+        return customerCity;
+    }
+
+    public void setCustomerCity(String customerCity) {
+        this.customerCity = customerCity;
+    }
+
+    public String getCustomerAddress() {
+        return customerAddress;
+    }
+
+    public void setCustomerAddress(String customerAddress) {
+        this.customerAddress = customerAddress;
+    }
+
+    public String getFinancierKey() {
+        return financierKey;
+    }
+
+    public void setFinancierKey(String financierKey) {
+        this.financierKey = financierKey;
+    }
+
+    public String getFinancierLabel() {
+        return financierLabel;
+    }
+
+    public void setFinancierLabel(String financierLabel) {
+        this.financierLabel = financierLabel;
+    }
+
+    public BigDecimal getLoanAmount() {
+        return loanAmount;
+    }
+
+    public void setLoanAmount(BigDecimal loanAmount) {
+        this.loanAmount = loanAmount;
     }
 
     public Integer getTenureMonths() {
@@ -132,44 +208,44 @@ public class LoanApplication {
         this.tenureMonths = tenureMonths;
     }
 
-    public String getPurpose() {
-        return purpose;
+    public BigDecimal getInterestRate() {
+        return interestRate;
     }
 
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
+    public void setInterestRate(BigDecimal interestRate) {
+        this.interestRate = interestRate;
     }
 
-    public LoanStatus getStatus() {
+    public BigDecimal getEmi() {
+        return emi;
+    }
+
+    public void setEmi(BigDecimal emi) {
+        this.emi = emi;
+    }
+
+    public BigDecimal getTotalInterest() {
+        return totalInterest;
+    }
+
+    public void setTotalInterest(BigDecimal totalInterest) {
+        this.totalInterest = totalInterest;
+    }
+
+    public BigDecimal getTotalPayable() {
+        return totalPayable;
+    }
+
+    public void setTotalPayable(BigDecimal totalPayable) {
+        this.totalPayable = totalPayable;
+    }
+
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(LoanStatus status) {
+    public void setStatus(String status) {
         this.status = status;
-    }
-
-    public LocalDate getApplicationDate() {
-        return applicationDate;
-    }
-
-    public void setApplicationDate(LocalDate applicationDate) {
-        this.applicationDate = applicationDate;
-    }
-
-    public String getReviewedBy() {
-        return reviewedBy;
-    }
-
-    public void setReviewedBy(String reviewedBy) {
-        this.reviewedBy = reviewedBy;
-    }
-
-    public String getRejectionReason() {
-        return rejectionReason;
-    }
-
-    public void setRejectionReason(String rejectionReason) {
-        this.rejectionReason = rejectionReason;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -178,13 +254,5 @@ public class LoanApplication {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

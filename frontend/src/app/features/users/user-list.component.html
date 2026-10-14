@@ -1,0 +1,60 @@
+<div class="page-head">
+  <div><h1>Users</h1><p class="muted">{{ totalElements() }} total</p></div>
+  <a class="btn btn-primary" routerLink="/users/new" [queryParams]="orgId ? { orgId: orgId } : {}">+ New user</a>
+</div>
+
+<form class="toolbar" (ngSubmit)="onFilter()">
+  <label class="sr-only" for="org">Filter by organization</label>
+  <select id="org" name="orgId" [(ngModel)]="orgId" (change)="onFilter()">
+    <option value="">All organizations</option>
+    @for (o of orgOptions(); track o.orgId) {
+      <option [value]="o.orgId">{{ o.orgName }}</option>
+    }
+  </select>
+  <label class="sr-only" for="role">Filter by role</label>
+  <select id="role" name="roleId" [(ngModel)]="roleId" (change)="onFilter()">
+    <option value="">All roles</option>
+    @for (r of roleOptions(); track r.roleId) {
+      <option [value]="r.roleId">{{ r.roleName }}</option>
+    }
+  </select>
+  <button class="btn btn-secondary" type="submit">Filter</button>
+</form>
+
+@if (loading()) {
+  <app-loading message="Loading users…" />
+} @else if (error()) {
+  <div class="alert alert-error" role="alert">{{ error() }} <button class="btn btn-ghost" (click)="load()">Retry</button></div>
+} @else if (!items().length) {
+  <div class="card"><app-empty-state title="No users found" message="Try different filters or add a new user." icon="👥" /></div>
+} @else {
+  <div class="card table-wrap"><table>
+    <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      @for (u of items(); track u.userId) {
+        <tr>
+          <td><a [routerLink]="['/users', u.userId]">{{ u.userName }}</a><div class="muted small">{{ u.userId }}</div></td>
+          <td>{{ u.userEmail }}</td>
+          <td>{{ u.roleName || u.roleId }}</td>
+          <td><span class="badge status-{{ u.status }}">{{ u.status }}</span></td>
+          <td class="row-actions">
+            <a class="btn btn-ghost" [routerLink]="['/users', u.userId]">View</a>
+            <a class="btn btn-ghost" [routerLink]="['/users', u.userId, 'edit']">Edit</a>
+            <button class="btn btn-ghost danger" type="button" (click)="askDelete(u)" [attr.aria-label]="'Delete ' + u.userName">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table></div>
+  <div class="pager">
+    <button class="btn btn-ghost" (click)="prev()" [disabled]="page === 0">← Prev</button>
+    <span>Page {{ page + 1 }} of {{ totalPages() }}</span>
+    <button class="btn btn-ghost" (click)="next()" [disabled]="page + 1 >= totalPages()">Next →</button>
+  </div>
+}
+
+@if (pendingDelete) {
+  <app-confirm-dialog title="Delete user?"
+    [message]="'Delete user ' + (pendingDelete.userName || pendingDelete.userId) + '? Their loans, collections and audit rows will also be deleted by the database.'"
+    (confirmed)="confirmDelete()" (cancelled)="pendingDelete = null" />
+}

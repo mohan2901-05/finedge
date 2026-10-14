@@ -1,0 +1,45 @@
+@if (loading()) {
+  <app-loading message="Loading application…" />
+} @else if (error() || !app()) {
+  <div class="alert alert-error" role="alert">{{ error() || 'Application not found.' }} <a class="btn btn-ghost" routerLink="/intake">Back to list</a></div>
+} @else {
+  <div class="page-head">
+    <div><h1>{{ app()?.ref }}</h1><p class="muted">{{ app()?.customerName }} · {{ app()?.customerEmail }} · <span class="badge">{{ app()?.status }}</span></p></div>
+    <div class="row-actions">
+      <a class="btn btn-ghost" [routerLink]="['/intake', app()?.id, 'edit']">Edit</a>
+      <button class="btn btn-ghost danger" type="button" (click)="confirmDelete = true">Delete</button>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Customer</h2>
+      <dl class="facts">
+        <div><dt>Phone</dt><dd>{{ app()?.customerPhone }}</dd></div>
+        <div><dt>Email</dt><dd>{{ app()?.customerEmail }}</dd></div>
+        <div><dt>City</dt><dd>{{ app()?.customerCity }}</dd></div>
+        <div><dt>Address</dt><dd>{{ app()?.customerAddress }}</dd></div>
+        @if (app()?.customerDob) { <div><dt>Date of birth</dt><dd>{{ app()?.customerDob }}</dd></div> }
+      </dl>
+    </div>
+    <div class="card">
+      <h2>Terms (as recorded)</h2>
+      <dl class="facts">
+        <div><dt>Financier</dt><dd>{{ app()?.financierLabel }} ({{ app()?.financierKey }})</dd></div>
+        <div><dt>Amount</dt><dd>{{ app()?.loanAmount }}</dd></div>
+        <div><dt>Tenure</dt><dd>{{ app()?.tenureMonths }} months</dd></div>
+        <div><dt>Rate</dt><dd>{{ app()?.interestRate }}%</dd></div>
+        <div><dt>EMI</dt><dd>{{ app()?.emi }}</dd></div>
+        <div><dt>Total interest</dt><dd>{{ app()?.totalInterest }}</dd></div>
+        <div><dt>Total payable</dt><dd>{{ app()?.totalPayable }}</dd></div>
+        <div><dt>Received</dt><dd>{{ app()?.createdAt }}</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  @if (confirmDelete) {
+    <app-confirm-dialog title="Delete application?"
+      message="This only removes the intake row. It is not linked to any booked loan."
+      (confirmed)="delete()" (cancelled)="confirmDelete = false" />
+  }
+}

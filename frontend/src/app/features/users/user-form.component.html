@@ -1,0 +1,62 @@
+<div class="page-head">
+  <div><h1>{{ isEdit() ? 'Edit user' : 'New user' }}</h1></div>
+  <a class="btn btn-ghost" routerLink="/users">← Back to list</a>
+</div>
+
+@if (loading() && isEdit()) {
+  <app-loading message="Loading user…" />
+} @else {
+  <form class="card form" [formGroup]="form" (ngSubmit)="submit()">
+    @if (error()) { <div class="alert alert-error" role="alert">{{ error() }}</div> }
+    <label>Organization
+      <select formControlName="orgId">
+        <option value="">Select organization…</option>
+        @for (o of orgOptions(); track o.orgId) {
+          <option [value]="o.orgId">{{ o.orgName }}</option>
+        }
+      </select>
+      @if (fieldInvalid('orgId')) { <span class="field-error">Organization is required.</span> }
+    </label>
+    <label>Role
+      <select formControlName="roleId">
+        <option value="">Select role…</option>
+        @for (r of roleOptions(); track r.roleId) {
+          <option [value]="r.roleId">{{ r.roleName }}</option>
+        }
+      </select>
+      @if (fieldInvalid('roleId')) { <span class="field-error">Role is required.</span> }
+    </label>
+    <label>User name
+      <input formControlName="userName" maxlength="50" />
+      @if (fieldInvalid('userName')) { <span class="field-error">Name is required (max 50).</span> }
+    </label>
+    @if (!isEdit()) {
+      <label>Password <span class="muted small">(stored once, never shown again)</span>
+        <input formControlName="password" type="password" maxlength="255" autocomplete="new-password" />
+        @if (fieldInvalid('password')) { <span class="field-error">Password is required.</span> }
+      </label>
+    }
+    <label>Email
+      <input formControlName="userEmail" type="email" maxlength="50" />
+      @if (fieldInvalid('userEmail')) { <span class="field-error">A valid email is required.</span> }
+      @if (serverError('userEmail')) { <span class="field-error">{{ serverError('userEmail') }}</span> }
+    </label>
+    <label>Date of birth
+      <input formControlName="dob" type="date" />
+    </label>
+    @if (!isEdit()) {
+      <label>PAN <span class="muted small">(stored once, never shown again)</span>
+        <input formControlName="panNo" maxlength="20" />
+      </label>
+    }
+    <label>Status
+      <select formControlName="status">
+        <option value="ACTIVE">Active</option>
+        <option value="INACTIVE">Inactive</option>
+      </select>
+    </label>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit" [disabled]="loading()">{{ loading() ? 'Saving…' : (isEdit() ? 'Save changes' : 'Create') }}</button>
+    </div>
+  </form>
+}

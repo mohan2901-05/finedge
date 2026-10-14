@@ -1,0 +1,62 @@
+<div class="page-head">
+  <div><h1>{{ isEdit() ? 'Correct collection' : 'Record collection' }}</h1><p class="muted">Amounts are recorded as entered — nothing is calculated.</p></div>
+  <a class="btn btn-ghost" routerLink="/collections">← Back to list</a>
+</div>
+
+@if (loading() && isEdit()) {
+  <app-loading message="Loading collection…" />
+} @else {
+  <form class="card form" [formGroup]="form" (ngSubmit)="submit()">
+    @if (error()) { <div class="alert alert-error" role="alert">{{ error() }}</div> }
+    @if (!isEdit()) {
+      <label>Organization ID
+        <input formControlName="orgId" placeholder="ORG-…" />
+        @if (fieldInvalid('orgId')) { <span class="field-error">Organization is required.</span> }
+      </label>
+      <label>Loan ID
+        <input formControlName="loanId" placeholder="LOAN-…" />
+        @if (fieldInvalid('loanId')) { <span class="field-error">Loan is required.</span> }
+      </label>
+      <label>Payer user ID
+        <input formControlName="userId" placeholder="USR-…" />
+        @if (fieldInvalid('userId')) { <span class="field-error">Payer is required.</span> }
+      </label>
+      <label>Amount
+        <input formControlName="collectionAmount" type="number" step="0.01" />
+        @if (fieldInvalid('collectionAmount')) { <span class="field-error">Amount is required.</span> }
+      </label>
+      <label>Collection date
+        <input formControlName="collectionDate" type="date" />
+      </label>
+      <label>Payment mode
+        <select formControlName="paymentMode">
+          <option value="CASH">Cash</option>
+          <option value="BANK_TRANSFER">Bank transfer</option>
+          <option value="UPI">UPI</option>
+          <option value="CHEQUE">Cheque</option>
+        </select>
+      </label>
+      <label>Collecting user ID (optional)
+        <input formControlName="collectedByUserId" placeholder="USR-…" />
+      </label>
+    } @else {
+      <p class="muted">Only reference, remarks and status can be corrected. Amount, date and parties are immutable once posted.</p>
+    }
+    <label>Reference number
+      <input formControlName="referenceNo" maxlength="100" />
+    </label>
+    <label>Remarks
+      <input formControlName="remarks" maxlength="255" />
+    </label>
+    <label>Status
+      <select formControlName="status">
+        <option value="SUCCESS">Success</option>
+        <option value="PENDING">Pending</option>
+        <option value="FAILED">Failed</option>
+      </select>
+    </label>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit" [disabled]="loading()">{{ loading() ? 'Saving…' : (isEdit() ? 'Save corrections' : 'Record') }}</button>
+    </div>
+  </form>
+}

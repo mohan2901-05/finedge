@@ -41,3 +41,6 @@ logging:
     root: INFO
     com.finedge: DEBUG
     org.hibernate.SQL: WARN
+    # The AWS serverless container logs the full process environment at INFO
+    # (including secrets such as DB_PASSWORD when set). Keep it at WARN.
+    com.amazonaws.serverless.proxy.spring: WARN

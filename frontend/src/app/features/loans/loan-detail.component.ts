@@ -1,44 +1,48 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { LoanService } from '../../core/loan.service';
 import { NotificationService } from '../../shared/notification.service';
-import { Loan } from '../../core/models';
+import { Collection, Loan, LoanActivity, Repayment } from '../../core/models';
 import { LoadingComponent } from '../../shared/loading.component';
+import { EmptyStateComponent } from '../../shared/empty-state.component';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog.component';
 
 @Component({
   selector: 'app-loan-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, LoadingComponent, ConfirmDialogComponent],
-  templateUrl: './loan-detail.component.html',
-  styleUrl: './loan-detail.component.scss'
+  imports: [CommonModule, RouterLink, LoadingComponent, EmptyStateComponent, ConfirmDialogComponent],
+  templateUrl: './loan-detail.component.html'
 })
 export class LoanDetailComponent implements OnInit {
-  private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly loans = inject(LoanService);
   private readonly toast = inject(NotificationService);
 
   readonly loading = signal(true);
-  readonly saving = signal(false);
   readonly error = signal('');
   readonly loan = signal<Loan | null>(null);
+  readonly activities = signal<LoanActivity[]>([]);
+  readonly repayments = signal<Repayment[]>([]);
+  readonly collections = signal<Collection[]>([]);
+  tab: 'activities' | 'repayments' | 'collections' = 'activities';
   confirmDelete = false;
 
-  readonly reviewForm = this.fb.group({
-    status: ['APPROVED', [Validators.required]],
-    reviewedBy: [''],
-    rejectionReason: ['']
-  });
-
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.loans.getById(id).subscribe({
-      next: (l) => {
-        this.loan.set(l);
+    const id = this.route.snapshot.paramMap.get('id') ?? '';
+    forkJoin({
+      loan: this.loans.getById(id),
+      activities: this.loans.activities(id, 0, 50),
+      repayments: this.loans.repayments(id, 0, 50),
+      collections: this.loans.collections(id, 0, 50)
+    }).subscribe({
+      next: ({ loan, activities, repayments, collections }) => {
+        this.loan.set(loan);
+        this.activities.set(activities.content ?? []);
+        this.repayments.set(repayments.content ?? []);
+        this.collections.set(collections.content ?? []);
         this.loading.set(false);
       },
       error: () => {
@@ -48,35 +52,8 @@ export class LoanDetailComponent implements OnInit {
     });
   }
 
-  review(): void {
-    const loan = this.loan();
-    if (!loan || this.reviewForm.invalid) return;
-    const raw = this.reviewForm.getRawValue();
-    if (raw.status === 'REJECTED' && !(raw.rejectionReason ?? '').trim()) {
-      this.error.set('Rejection reason is required when rejecting.');
-      return;
-    }
-    this.saving.set(true);
-    this.error.set('');
-    this.loans.update(loan.id, {
-      status: raw.status as never,
-      reviewedBy: raw.reviewedBy?.trim() || undefined,
-      rejectionReason: raw.rejectionReason?.trim() || undefined
-    }).subscribe({
-      next: (updated) => {
-        this.loan.set(updated);
-        this.toast.success(`Loan ${updated.status.toLowerCase()}.`);
-        this.saving.set(false);
-      },
-      error: (e) => {
-        this.error.set(e?.error?.message ?? 'Review failed.');
-        this.saving.set(false);
-      }
-    });
-  }
-
   delete(): void {
-    const id = this.loan()?.id;
+    const id = this.loan()?.loanId;
     if (!id) return;
     this.confirmDelete = false;
     this.loans.remove(id).subscribe({
@@ -84,7 +61,7 @@ export class LoanDetailComponent implements OnInit {
         this.toast.success('Loan deleted.');
         this.router.navigate(['/loans']);
       },
-      error: () => this.toast.error('Failed to delete loan.')
+      error: (err) => this.toast.error(err?.error?.message ?? 'Failed to delete loan.')
     });
   }
 }

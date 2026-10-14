@@ -1,6 +1,0 @@
-.head-actions { display: flex; gap: .5rem; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.dl div { display: flex; justify-content: space-between; gap: 1rem; padding: .4rem 0; border-bottom: 1px solid var(--border); }
-.dl dt { color: var(--muted); } .dl dd { margin: 0; font-weight: 600; text-align: right; }
-.review-form { display: flex; flex-direction: column; gap: 1rem; }
-@media (max-width: 860px) { .grid-2 { grid-template-columns: 1fr; } }

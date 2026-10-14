@@ -1,0 +1,49 @@
+@if (loading()) {
+  <app-loading message="Loading role…" />
+} @else if (error() || !role()) {
+  <div class="alert alert-error" role="alert">{{ error() || 'Role not found.' }} <a class="btn btn-ghost" routerLink="/roles">Back to list</a></div>
+} @else {
+  <div class="page-head">
+    <div><h1>{{ role()?.roleName }}</h1><p class="muted">{{ role()?.roleId }} · {{ role()?.orgName || role()?.orgId }} · <span class="badge status-{{ role()?.status }}">{{ role()?.status }}</span></p></div>
+    <div class="row-actions">
+      <a class="btn btn-ghost" [routerLink]="['/roles', role()?.roleId, 'edit']">Edit</a>
+      <button class="btn btn-ghost danger" type="button" (click)="confirmDelete = true">Delete</button>
+    </div>
+  </div>
+  @if (role()?.roleDescription) { <p class="muted">{{ role()?.roleDescription }}</p> }
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Permissions ({{ permissions().length }})</h2>
+      <p class="muted small">Recorded assignments only — they are not enforced by the API.</p>
+      @if (!permissions().length) {
+        <app-empty-state title="No permissions assigned" message="Grant permissions from the Access screen." icon="🔑" />
+      } @else {
+        <ul class="link-list">
+          @for (m of permissions(); track m.mappingId) {
+            <li>{{ m.permissionCode || m.permissionId }} <span class="muted small">on {{ m.moduleCode || m.moduleId }}</span></li>
+          }
+        </ul>
+      }
+      <a class="btn btn-secondary" routerLink="/access" [queryParams]="{ roleId: role()?.roleId }">Manage access</a>
+    </div>
+    <div class="card">
+      <h2>Users ({{ usersList().length }})</h2>
+      @if (!usersList().length) {
+        <app-empty-state title="No users" message="Users with this role will appear here." icon="👥" />
+      } @else {
+        <ul class="link-list">
+          @for (u of usersList(); track u.userId) {
+            <li><a [routerLink]="['/users', u.userId]">{{ u.userName }}</a> <span class="muted small">{{ u.userEmail }}</span></li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+
+  @if (confirmDelete) {
+    <app-confirm-dialog title="Delete role?"
+      message="Its users, assignments and dependent records will also be deleted by the database. This cannot be undone."
+      (confirmed)="delete()" (cancelled)="confirmDelete = false" />
+  }
+}

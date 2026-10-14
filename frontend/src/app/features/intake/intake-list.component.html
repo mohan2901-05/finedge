@@ -1,0 +1,59 @@
+<div class="page-head">
+  <div><h1>Loan intake</h1><p class="muted">{{ totalElements() }} total</p></div>
+  <a class="btn btn-primary" routerLink="/intake/new">+ New application</a>
+</div>
+
+<form class="toolbar" (ngSubmit)="onFilter()">
+  <label class="sr-only" for="status">Filter by status</label>
+  <select id="status" name="status" [(ngModel)]="status" (change)="onFilter()">
+    <option value="">All statuses</option>
+    <option value="Pending Review">Pending Review</option>
+    <option value="Approved">Approved</option>
+    <option value="Rejected">Rejected</option>
+  </select>
+  <button class="btn btn-secondary" type="submit">Filter</button>
+</form>
+
+<form class="toolbar" (ngSubmit)="lookupByRef()">
+  <label class="sr-only" for="ref">Look up by reference</label>
+  <input id="ref" name="refLookup" [(ngModel)]="refLookup" placeholder="Look up by ref, e.g. MF-…" />
+  <button class="btn btn-secondary" type="submit">Look up</button>
+</form>
+
+@if (loading()) {
+  <app-loading message="Loading applications…" />
+} @else if (error()) {
+  <div class="alert alert-error" role="alert">{{ error() }} <button class="btn btn-ghost" (click)="load()">Retry</button></div>
+} @else if (!items().length) {
+  <div class="card"><app-empty-state title="No applications found" message="Try a different filter or add a new application." icon="📝" /></div>
+} @else {
+  <div class="card table-wrap"><table>
+    <thead><tr><th>Reference</th><th>Customer</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      @for (a of items(); track a.id) {
+        <tr>
+          <td><a [routerLink]="['/intake', a.id]">{{ a.ref }}</a></td>
+          <td>{{ a.customerName }}<div class="muted small">{{ a.customerEmail }}</div></td>
+          <td>{{ a.loanAmount }}</td>
+          <td><span class="badge">{{ a.status }}</span></td>
+          <td class="row-actions">
+            <a class="btn btn-ghost" [routerLink]="['/intake', a.id]">View</a>
+            <a class="btn btn-ghost" [routerLink]="['/intake', a.id, 'edit']">Edit</a>
+            <button class="btn btn-ghost danger" type="button" (click)="askDelete(a)" [attr.aria-label]="'Delete ' + a.ref">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table></div>
+  <div class="pager">
+    <button class="btn btn-ghost" (click)="prev()" [disabled]="page === 0">← Prev</button>
+    <span>Page {{ page + 1 }} of {{ totalPages() }}</span>
+    <button class="btn btn-ghost" (click)="next()" [disabled]="page + 1 >= totalPages()">Next →</button>
+  </div>
+}
+
+@if (pendingDelete) {
+  <app-confirm-dialog title="Delete application?"
+    [message]="'Delete application ' + (pendingDelete.ref || pendingDelete.id) + '? This only removes the intake row.'"
+    (confirmed)="confirmDelete()" (cancelled)="pendingDelete = null" />
+}

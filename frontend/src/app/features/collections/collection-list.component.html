@@ -1,0 +1,57 @@
+<div class="page-head">
+  <div><h1>Collections</h1><p class="muted">{{ totalElements() }} total · amounts are recorded, never calculated</p></div>
+  <a class="btn btn-primary" routerLink="/collections/new" [queryParams]="loanId ? { loanId: loanId } : {}">+ New collection</a>
+</div>
+
+<form class="toolbar" (ngSubmit)="onFilter()">
+  <label class="sr-only" for="loan">Filter by loan ID</label>
+  <input id="loan" name="loanId" [(ngModel)]="loanId" placeholder="Loan ID…" />
+  <label class="sr-only" for="org">Filter by organization ID</label>
+  <input id="org" name="orgId" [(ngModel)]="orgId" placeholder="Org ID…" />
+  <label class="sr-only" for="status">Filter by status</label>
+  <select id="status" name="status" [(ngModel)]="status" (change)="onFilter()">
+    <option value="">All statuses</option>
+    <option value="SUCCESS">Success</option>
+    <option value="PENDING">Pending</option>
+    <option value="FAILED">Failed</option>
+  </select>
+  <button class="btn btn-secondary" type="submit">Filter</button>
+</form>
+
+@if (loading()) {
+  <app-loading message="Loading collections…" />
+} @else if (error()) {
+  <div class="alert alert-error" role="alert">{{ error() }} <button class="btn btn-ghost" (click)="load()">Retry</button></div>
+} @else if (!items().length) {
+  <div class="card"><app-empty-state title="No collections found" message="Try different filters or record a new collection." icon="💵" /></div>
+} @else {
+  <div class="card table-wrap"><table>
+    <thead><tr><th>Collection</th><th>Loan</th><th>Amount</th><th>Date</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      @for (c of items(); track c.collectionId) {
+        <tr>
+          <td>{{ c.collectionId }}<div class="muted small">{{ c.paymentMode || 'CASH' }}</div></td>
+          <td><a [routerLink]="['/loans', c.loanId]">{{ c.loanId }}</a></td>
+          <td>{{ c.collectionAmount }}</td>
+          <td>{{ c.collectionDate }}</td>
+          <td><span class="badge">{{ c.status }}</span></td>
+          <td class="row-actions">
+            <a class="btn btn-ghost" [routerLink]="['/collections', c.collectionId, 'edit']">Edit</a>
+            <button class="btn btn-ghost danger" type="button" (click)="askDelete(c)" [attr.aria-label]="'Delete ' + c.collectionId">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table></div>
+  <div class="pager">
+    <button class="btn btn-ghost" (click)="prev()" [disabled]="page === 0">← Prev</button>
+    <span>Page {{ page + 1 }} of {{ totalPages() }}</span>
+    <button class="btn btn-ghost" (click)="next()" [disabled]="page + 1 >= totalPages()">Next →</button>
+  </div>
+}
+
+@if (pendingDelete) {
+  <app-confirm-dialog title="Delete collection?"
+    [message]="'Delete collection ' + (pendingDelete.collectionId || '') + '? Only its remarks, status and reference can be corrected otherwise.'"
+    (confirmed)="confirmDelete()" (cancelled)="pendingDelete = null" />
+}
