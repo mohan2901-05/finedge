@@ -1,0 +1,87 @@
+<div class="page-head">
+  <div><h1>{{ isEdit() ? 'Edit application' : 'New application' }}</h1><p class="muted">Figures are recorded as entered — nothing is calculated.</p></div>
+  <a class="btn btn-ghost" routerLink="/intake">← Back to list</a>
+</div>
+
+@if (loading() && isEdit()) {
+  <app-loading message="Loading application…" />
+} @else {
+  <form class="card form" [formGroup]="form" (ngSubmit)="submit()">
+    @if (error()) { <div class="alert alert-error" role="alert">{{ error() }}</div> }
+    <label>Reference
+      <input formControlName="ref" maxlength="50" />
+      @if (fieldInvalid('ref')) { <span class="field-error">Reference is required.</span> }
+      @if (serverError('ref')) { <span class="field-error">{{ serverError('ref') }}</span> }
+    </label>
+    <label>Customer name
+      <input formControlName="customerName" maxlength="100" />
+      @if (fieldInvalid('customerName')) { <span class="field-error">Name is required.</span> }
+    </label>
+    <label>Phone
+      <input formControlName="customerPhone" maxlength="15" />
+      @if (fieldInvalid('customerPhone')) { <span class="field-error">Phone is required.</span> }
+    </label>
+    <label>Email
+      <input formControlName="customerEmail" type="email" maxlength="100" />
+      @if (fieldInvalid('customerEmail')) { <span class="field-error">A valid email is required.</span> }
+    </label>
+    <label>Date of birth
+      <input formControlName="customerDob" type="date" />
+    </label>
+    @if (!isEdit()) {
+      <label>PAN <span class="muted small">(stored once, never shown again)</span>
+        <input formControlName="customerPan" maxlength="20" />
+      </label>
+    }
+    <label>City
+      <input formControlName="customerCity" maxlength="100" />
+      @if (fieldInvalid('customerCity')) { <span class="field-error">City is required.</span> }
+    </label>
+    <label>Address
+      <input formControlName="customerAddress" maxlength="255" />
+      @if (fieldInvalid('customerAddress')) { <span class="field-error">Address is required.</span> }
+    </label>
+    <label>Financier key
+      <input formControlName="financierKey" maxlength="50" />
+      @if (fieldInvalid('financierKey')) { <span class="field-error">Financier key is required.</span> }
+    </label>
+    <label>Financier label
+      <input formControlName="financierLabel" maxlength="100" />
+      @if (fieldInvalid('financierLabel')) { <span class="field-error">Financier label is required.</span> }
+    </label>
+    <label>Loan amount
+      <input formControlName="loanAmount" type="number" step="0.01" />
+      @if (fieldInvalid('loanAmount')) { <span class="field-error">Amount is required.</span> }
+    </label>
+    <label>Tenure (months)
+      <input formControlName="tenureMonths" type="number" step="1" />
+      @if (fieldInvalid('tenureMonths')) { <span class="field-error">Tenure is required.</span> }
+    </label>
+    <label>Interest rate (%)
+      <input formControlName="interestRate" type="number" step="0.01" />
+      @if (fieldInvalid('interestRate')) { <span class="field-error">Rate is required.</span> }
+    </label>
+    <label>EMI
+      <input formControlName="emi" type="number" step="0.01" />
+      @if (fieldInvalid('emi')) { <span class="field-error">EMI is required.</span> }
+    </label>
+    <label>Total interest
+      <input formControlName="totalInterest" type="number" step="0.01" />
+      @if (fieldInvalid('totalInterest')) { <span class="field-error">Total interest is required.</span> }
+    </label>
+    <label>Total payable
+      <input formControlName="totalPayable" type="number" step="0.01" />
+      @if (fieldInvalid('totalPayable')) { <span class="field-error">Total payable is required.</span> }
+    </label>
+    <label>Status
+      <select formControlName="status">
+        <option value="Pending Review">Pending Review</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+      </select>
+    </label>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit" [disabled]="loading()">{{ loading() ? 'Saving…' : (isEdit() ? 'Save changes' : 'Create') }}</button>
+    </div>
+  </form>
+}

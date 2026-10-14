@@ -1,0 +1,51 @@
+<div class="page-head">
+  <div><h1>Organizations</h1><p class="muted">{{ totalElements() }} total</p></div>
+  <a class="btn btn-primary" routerLink="/orgs/new">+ New organization</a>
+</div>
+
+<form class="toolbar" (ngSubmit)="onFilter()">
+  <label class="sr-only" for="status">Filter by status</label>
+  <select id="status" name="status" [(ngModel)]="status" (change)="onFilter()">
+    <option value="">All statuses</option>
+    <option value="ACTIVE">Active</option>
+    <option value="INACTIVE">Inactive</option>
+  </select>
+  <button class="btn btn-secondary" type="submit">Filter</button>
+</form>
+
+@if (loading()) {
+  <app-loading message="Loading organizations…" />
+} @else if (error()) {
+  <div class="alert alert-error" role="alert">{{ error() }} <button class="btn btn-ghost" (click)="load()">Retry</button></div>
+} @else if (!items().length) {
+  <div class="card"><app-empty-state title="No organizations found" message="Try a different filter or add a new organization." icon="🏢" /></div>
+} @else {
+  <div class="card table-wrap"><table>
+    <thead><tr><th>Organization</th><th>Email</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      @for (o of items(); track o.orgId) {
+        <tr>
+          <td><a [routerLink]="['/orgs', o.orgId]">{{ o.orgName }}</a><div class="muted small">{{ o.orgId }}</div></td>
+          <td>{{ o.orgEmail }}</td>
+          <td><span class="badge status-{{ o.status }}">{{ o.status }}</span></td>
+          <td class="row-actions">
+            <a class="btn btn-ghost" [routerLink]="['/orgs', o.orgId]">View</a>
+            <a class="btn btn-ghost" [routerLink]="['/orgs', o.orgId, 'edit']">Edit</a>
+            <button class="btn btn-ghost danger" type="button" (click)="askDelete(o)" [attr.aria-label]="'Delete ' + o.orgName">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table></div>
+  <div class="pager">
+    <button class="btn btn-ghost" (click)="prev()" [disabled]="page === 0">← Prev</button>
+    <span>Page {{ page + 1 }} of {{ totalPages() }}</span>
+    <button class="btn btn-ghost" (click)="next()" [disabled]="page + 1 >= totalPages()">Next →</button>
+  </div>
+}
+
+@if (pendingDelete) {
+  <app-confirm-dialog title="Delete organization?"
+    [message]="'Delete ' + (pendingDelete.orgName || pendingDelete.orgId) + '? Its roles, users, loans, collections and audit rows will also be deleted by the database.'"
+    (confirmed)="confirmDelete()" (cancelled)="pendingDelete = null" />
+}

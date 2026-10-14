@@ -1,13 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-import { Loan, LoanCreateRequest, LoanUpdateRequest, PageResponse } from './models';
+import { Collection, Loan, LoanActivity, LoanCreateRequest, LoanUpdateRequest, PageResponse, Repayment } from './models';
 
 export interface LoanQuery {
-  customerId?: number;
-  loanType?: string;
+  orgId?: string;
+  userId?: string;
   status?: string;
-  search?: string;
   page?: number;
   size?: number;
 }
@@ -17,25 +16,37 @@ export class LoanService {
   private readonly api = inject(ApiService);
 
   list(query: LoanQuery = {}): Observable<PageResponse<Loan>> {
-    return this.api.get<PageResponse<Loan>>('/loans', {
-      customerId: query.customerId, loanType: query.loanType, status: query.status,
-      search: query.search, page: query.page ?? 0, size: query.size ?? 10
+    return this.api.get<PageResponse<Loan>>('/etfdb/loans', {
+      orgId: query.orgId, userId: query.userId, status: query.status,
+      page: query.page ?? 0, size: query.size ?? 10
     });
   }
 
-  getById(id: number): Observable<Loan> {
-    return this.api.get<Loan>(`/loans/${id}`);
+  getById(id: string): Observable<Loan> {
+    return this.api.get<Loan>(`/etfdb/loans/${id}`);
+  }
+
+  activities(id: string, page = 0, size = 10): Observable<PageResponse<LoanActivity>> {
+    return this.api.get<PageResponse<LoanActivity>>(`/etfdb/loans/${id}/activities`, { page, size });
+  }
+
+  repayments(id: string, page = 0, size = 10): Observable<PageResponse<Repayment>> {
+    return this.api.get<PageResponse<Repayment>>(`/etfdb/loans/${id}/repayments`, { page, size });
+  }
+
+  collections(id: string, page = 0, size = 10): Observable<PageResponse<Collection>> {
+    return this.api.get<PageResponse<Collection>>(`/etfdb/loans/${id}/collections`, { page, size });
   }
 
   create(body: LoanCreateRequest): Observable<Loan> {
-    return this.api.post<Loan>('/loans', body);
+    return this.api.post<Loan>('/etfdb/loans', body);
   }
 
-  update(id: number, body: LoanUpdateRequest): Observable<Loan> {
-    return this.api.put<Loan>(`/loans/${id}`, body);
+  update(id: string, body: LoanUpdateRequest): Observable<Loan> {
+    return this.api.put<Loan>(`/etfdb/loans/${id}`, body);
   }
 
-  remove(id: number): Observable<void> {
-    return this.api.remove(`/loans/${id}`);
+  remove(id: string): Observable<void> {
+    return this.api.remove(`/etfdb/loans/${id}`);
   }
 }

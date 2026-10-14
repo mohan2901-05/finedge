@@ -1,0 +1,48 @@
+@if (loading()) {
+  <app-loading message="Loading organization…" />
+} @else if (error() || !org()) {
+  <div class="alert alert-error" role="alert">{{ error() || 'Organization not found.' }} <a class="btn btn-ghost" routerLink="/orgs">Back to list</a></div>
+} @else {
+  <div class="page-head">
+    <div><h1>{{ org()?.orgName }}</h1><p class="muted">{{ org()?.orgId }} · {{ org()?.orgEmail }} · <span class="badge status-{{ org()?.status }}">{{ org()?.status }}</span></p></div>
+    <div class="row-actions">
+      <a class="btn btn-ghost" [routerLink]="['/orgs', org()?.orgId, 'edit']">Edit</a>
+      <button class="btn btn-ghost danger" type="button" (click)="confirmDelete = true">Delete</button>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Roles ({{ rolesList().length }})</h2>
+      @if (!rolesList().length) {
+        <app-empty-state title="No roles" message="Roles in this organization will appear here." icon="🛡️" />
+      } @else {
+        <ul class="link-list">
+          @for (r of rolesList(); track r.roleId) {
+            <li><a [routerLink]="['/roles', r.roleId]">{{ r.roleName }}</a> <span class="muted small">{{ r.roleId }}</span></li>
+          }
+        </ul>
+      }
+      <a class="btn btn-secondary" [routerLink]="['/roles/new']" [queryParams]="{ orgId: org()?.orgId }">+ New role</a>
+    </div>
+    <div class="card">
+      <h2>Users ({{ usersList().length }})</h2>
+      @if (!usersList().length) {
+        <app-empty-state title="No users" message="Users in this organization will appear here." icon="👥" />
+      } @else {
+        <ul class="link-list">
+          @for (u of usersList(); track u.userId) {
+            <li><a [routerLink]="['/users', u.userId]">{{ u.userName }}</a> <span class="muted small">{{ u.userEmail }}</span></li>
+          }
+        </ul>
+      }
+      <a class="btn btn-secondary" [routerLink]="['/users/new']" [queryParams]="{ orgId: org()?.orgId }">+ New user</a>
+    </div>
+  </div>
+
+  @if (confirmDelete) {
+    <app-confirm-dialog title="Delete organization?"
+      message="This also deletes its roles, users, loans, collections and audit rows in the database. This cannot be undone."
+      (confirmed)="delete()" (cancelled)="confirmDelete = false" />
+  }
+}

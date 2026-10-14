@@ -128,6 +128,43 @@ input:focus, select:focus, button:focus-visible, a:focus-visible {
 
 .pager { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 0.75rem; color: var(--muted); }
 
+.row-actions { white-space: nowrap; display: flex; gap: 0.25rem; justify-content: flex-end; }
+.small { font-size: 0.8rem; }
+
+.form { display: flex; flex-direction: column; gap: 0.9rem; }
+.form > label { display: flex; flex-direction: column; gap: 0.3rem; font-weight: 600; font-size: 0.85rem; }
+.form-inline form { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: flex-end; }
+.form-inline label { display: flex; flex-direction: column; gap: 0.3rem; font-weight: 600; font-size: 0.85rem; }
+.check { flex-direction: row !important; align-items: center; gap: 0.5rem !important; }
+.check input { width: auto; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.facts { margin: 0; }
+.facts div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; font-weight: 600; text-align: right; }
+.link-list { list-style: none; margin: 0 0 1rem; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+
+.tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.tabs .btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.stat { text-align: center; text-decoration: none; color: var(--text); }
+.stat:hover { text-decoration: none; }
+.stat-value { font-size: 1.8rem; font-weight: 800; }
+.stat-label { color: var(--muted); font-size: 0.85rem; }
+
+.dev-banner {
+  background: #fef3c7;
+  color: #92400e;
+  border-bottom: 1px solid #fde68a;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+@media (max-width: 860px) { .grid-2 { grid-template-columns: 1fr; } }
+
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
 
 @media (max-width: 640px) {

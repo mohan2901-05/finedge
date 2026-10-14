@@ -1,0 +1,38 @@
+<div class="page-head">
+  <div><h1>{{ isEdit() ? 'Edit role' : 'New role' }}</h1></div>
+  <a class="btn btn-ghost" routerLink="/roles">← Back to list</a>
+</div>
+
+@if (loading() && isEdit()) {
+  <app-loading message="Loading role…" />
+} @else {
+  <form class="card form" [formGroup]="form" (ngSubmit)="submit()">
+    @if (error()) { <div class="alert alert-error" role="alert">{{ error() }}</div> }
+    <label>Organization
+      <select formControlName="orgId">
+        <option value="">Select organization…</option>
+        @for (o of orgOptions(); track o.orgId) {
+          <option [value]="o.orgId">{{ o.orgName }}</option>
+        }
+      </select>
+      @if (fieldInvalid('orgId')) { <span class="field-error">Organization is required.</span> }
+    </label>
+    <label>Role name
+      <input formControlName="roleName" maxlength="50" />
+      @if (fieldInvalid('roleName')) { <span class="field-error">Name is required (max 50).</span> }
+      @if (serverError('roleName')) { <span class="field-error">{{ serverError('roleName') }}</span> }
+    </label>
+    <label>Description
+      <input formControlName="roleDescription" maxlength="255" />
+    </label>
+    <label>Status
+      <select formControlName="status">
+        <option value="ACTIVE">Active</option>
+        <option value="INACTIVE">Inactive</option>
+      </select>
+    </label>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit" [disabled]="loading()">{{ loading() ? 'Saving…' : (isEdit() ? 'Save changes' : 'Create') }}</button>
+    </div>
+  </form>
+}

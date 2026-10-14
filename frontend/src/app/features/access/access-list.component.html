@@ -1,0 +1,83 @@
+<div class="page-head">
+  <div><h1>Access assignments</h1><p class="muted">{{ totalElements() }} total · recorded only, not enforced</p></div>
+</div>
+
+<div class="card form-inline">
+  <h2>Grant permission</h2>
+  <form [formGroup]="grantForm" (ngSubmit)="grant()">
+    <label>Organization
+      <input formControlName="orgId" placeholder="ORG-…" />
+    </label>
+    <label>Role
+      <select formControlName="roleId">
+        <option value="">Select role…</option>
+        @for (r of roleOptions(); track r.roleId) {
+          <option [value]="r.roleId">{{ r.roleName }} ({{ r.roleId }})</option>
+        }
+      </select>
+    </label>
+    <label>Module
+      <select formControlName="moduleId">
+        <option value="">Select module…</option>
+        @for (m of moduleOptions(); track m.moduleId) {
+          <option [value]="m.moduleId">{{ m.moduleName }} ({{ m.moduleCode }})</option>
+        }
+      </select>
+    </label>
+    <label>Permission
+      <select formControlName="permissionId">
+        <option value="">Select permission…</option>
+        @for (p of permissionOptions(); track p.permissionId) {
+          <option [value]="p.permissionId">{{ p.permissionName }} ({{ p.permissionCode }})</option>
+        }
+      </select>
+    </label>
+    <button class="btn btn-primary" type="submit" [disabled]="granting()">{{ granting() ? 'Granting…' : 'Grant' }}</button>
+  </form>
+</div>
+
+<form class="toolbar" (ngSubmit)="onFilter()">
+  <label class="sr-only" for="role">Filter by role</label>
+  <select id="role" name="roleId" [(ngModel)]="roleId" (change)="onFilter()">
+    <option value="">All roles</option>
+    @for (r of roleOptions(); track r.roleId) {
+      <option [value]="r.roleId">{{ r.roleName }}</option>
+    }
+  </select>
+  <button class="btn btn-secondary" type="submit">Filter</button>
+</form>
+
+@if (loading()) {
+  <app-loading message="Loading assignments…" />
+} @else if (error()) {
+  <div class="alert alert-error" role="alert">{{ error() }} <button class="btn btn-ghost" (click)="load()">Retry</button></div>
+} @else if (!items().length) {
+  <div class="card"><app-empty-state title="No assignments found" message="Grant a permission above or try a different role." icon="🔑" /></div>
+} @else {
+  <div class="card table-wrap"><table>
+    <thead><tr><th>Role</th><th>Module</th><th>Permission</th><th></th></tr></thead>
+    <tbody>
+      @for (m of items(); track m.mappingId) {
+        <tr>
+          <td>{{ m.roleId }}</td>
+          <td>{{ m.moduleCode || m.moduleId }}</td>
+          <td>{{ m.permissionCode || m.permissionId }}</td>
+          <td class="row-actions">
+            <button class="btn btn-ghost danger" type="button" (click)="askDelete(m)" [attr.aria-label]="'Revoke ' + m.mappingId">Revoke</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table></div>
+  <div class="pager">
+    <button class="btn btn-ghost" (click)="prev()" [disabled]="page === 0">← Prev</button>
+    <span>Page {{ page + 1 }} of {{ totalPages() }}</span>
+    <button class="btn btn-ghost" (click)="next()" [disabled]="page + 1 >= totalPages()">Next →</button>
+  </div>
+}
+
+@if (pendingDelete) {
+  <app-confirm-dialog title="Revoke assignment?"
+    [message]="'Revoke this permission assignment? This only deletes the record; the API enforces nothing either way.'"
+    (confirmed)="confirmDelete()" (cancelled)="pendingDelete = null" />
+}

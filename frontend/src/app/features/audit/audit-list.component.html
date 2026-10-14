@@ -1,0 +1,38 @@
+<div class="page-head">
+  <div><h1>Audit trail</h1><p class="muted">{{ totalElements() }} entries · read-only, newest first</p></div>
+</div>
+
+<form class="toolbar" (ngSubmit)="onFilter()">
+  <label class="sr-only" for="org">Filter by organization ID</label>
+  <input id="org" name="orgId" [(ngModel)]="orgId" placeholder="Org ID…" />
+  <label class="sr-only" for="user">Filter by user ID</label>
+  <input id="user" name="userId" [(ngModel)]="userId" placeholder="User ID…" />
+  <button class="btn btn-secondary" type="submit">Filter</button>
+</form>
+
+@if (loading()) {
+  <app-loading message="Loading audit entries…" />
+} @else if (error()) {
+  <div class="alert alert-error" role="alert">{{ error() }} <button class="btn btn-ghost" (click)="load()">Retry</button></div>
+} @else if (!items().length) {
+  <div class="card"><app-empty-state title="No audit entries" message="Recorded actions will appear here, newest first." icon="📋" /></div>
+} @else {
+  <div class="card table-wrap"><table>
+    <thead><tr><th>When</th><th>Who</th><th>Action</th><th>Details</th></tr></thead>
+    <tbody>
+      @for (a of items(); track a.auditId) {
+        <tr>
+          <td>{{ a.createdDatetime }}</td>
+          <td>{{ a.userName }}<div class="muted small">{{ a.userId }}</div></td>
+          <td><span class="badge">{{ a.action }}</span></td>
+          <td>{{ a.details || '—' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table></div>
+  <div class="pager">
+    <button class="btn btn-ghost" (click)="prev()" [disabled]="page === 0">← Prev</button>
+    <span>Page {{ page + 1 }} of {{ totalPages() }}</span>
+    <button class="btn btn-ghost" (click)="next()" [disabled]="page + 1 >= totalPages()">Next →</button>
+  </div>
+}

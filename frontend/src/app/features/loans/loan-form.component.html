@@ -1,46 +1,63 @@
 <div class="page-head">
-  <h1>New loan application</h1>
-  <a class="btn btn-ghost" routerLink="/loans">← Back</a>
+  <div><h1>{{ isEdit() ? 'Edit loan' : 'Book loan' }}</h1><p class="muted">Figures are recorded as entered — nothing is calculated.</p></div>
+  <a class="btn btn-ghost" routerLink="/loans">← Back to list</a>
 </div>
 
-@if (error()) { <div class="alert alert-error" role="alert">{{ error() }}</div> }
-
-<form class="card form-grid" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-  <div class="field">
-    <label for="customerId">Customer ID</label>
-    <input id="customerId" type="number" formControlName="customerId" min="1" />
-    @if (invalid('customerId')) { <span class="field-error">Customer ID is required.</span> }
-  </div>
-  <div class="field">
-    <label for="loanType">Loan type</label>
-    <select id="loanType" formControlName="loanType">
-      <option value="">Select type…</option>
-      @for (t of types; track t) { <option [value]="t">{{ t }}</option> }
-    </select>
-    @if (invalid('loanType')) { <span class="field-error">Loan type is required.</span> }
-  </div>
-  <div class="field">
-    <label for="requestedAmount">Requested amount (USD)</label>
-    <input id="requestedAmount" type="number" formControlName="requestedAmount" min="100" step="0.01" />
-    @if (invalid('requestedAmount')) { <span class="field-error">Minimum 100.00.</span> }
-  </div>
-  <div class="field">
-    <label for="interestRate">Interest rate (%)</label>
-    <input id="interestRate" type="number" formControlName="interestRate" min="0.01" max="50" step="0.01" />
-    @if (invalid('interestRate')) { <span class="field-error">Rate must be 0.01–50.</span> }
-  </div>
-  <div class="field">
-    <label for="tenureMonths">Tenure (months)</label>
-    <input id="tenureMonths" type="number" formControlName="tenureMonths" min="1" max="480" />
-    @if (invalid('tenureMonths')) { <span class="field-error">Tenure must be 1–480.</span> }
-  </div>
-  <div class="field full">
-    <label for="purpose">Purpose</label>
-    <input id="purpose" formControlName="purpose" maxlength="255" placeholder="e.g. Home renovation" />
-    @if (invalid('purpose')) { <span class="field-error">Purpose is required.</span> }
-  </div>
-  <div class="form-actions full">
-    <a class="btn btn-ghost" routerLink="/loans">Cancel</a>
-    <button class="btn btn-primary" type="submit" [disabled]="saving()">{{ saving() ? 'Submitting…' : 'Submit application' }}</button>
-  </div>
-</form>
+@if (loading() && isEdit()) {
+  <app-loading message="Loading loan…" />
+} @else {
+  <form class="card form" [formGroup]="form" (ngSubmit)="submit()">
+    @if (error()) { <div class="alert alert-error" role="alert">{{ error() }}</div> }
+    @if (!isEdit()) {
+      <label>Organization ID
+        <input formControlName="orgId" placeholder="ORG-…" />
+        @if (fieldInvalid('orgId')) { <span class="field-error">Organization is required.</span> }
+      </label>
+      <label>User ID
+        <input formControlName="userId" placeholder="USR-…" />
+        @if (fieldInvalid('userId')) { <span class="field-error">User is required.</span> }
+      </label>
+      <label>Loan amount
+        <input formControlName="loanAmount" type="number" step="0.01" />
+        @if (fieldInvalid('loanAmount')) { <span class="field-error">Amount is required.</span> }
+      </label>
+      <label>Interest rate (%)
+        <input formControlName="interestRate" type="number" step="0.01" />
+      </label>
+      <label>Tenure (months)
+        <input formControlName="tenureMonths" type="number" step="1" />
+        @if (fieldInvalid('tenureMonths')) { <span class="field-error">Tenure is required.</span> }
+      </label>
+      <label>Application date
+        <input formControlName="applicationDate" type="date" />
+      </label>
+    } @else {
+      <p class="muted">Booked terms (amount, rate, tenure) cannot be changed. To correct them, delete and re-book the loan.</p>
+    }
+    <label>Purpose
+      <input formControlName="purpose" maxlength="255" />
+    </label>
+    <label>Approval date
+      <input formControlName="approvalDate" type="date" />
+    </label>
+    <label>Disbursement date
+      <input formControlName="disbursementDate" type="date" />
+    </label>
+    <label>Due date
+      <input formControlName="dueDate" type="date" />
+    </label>
+    <label>Outstanding amount
+      <input formControlName="outstandingAmount" type="number" step="0.01" />
+    </label>
+    <label class="check"><input formControlName="received" type="checkbox" /> Received</label>
+    <label>Status
+      <select formControlName="status">
+        <option value="PENDING">Pending</option>
+        <option value="DISBURSED">Disbursed</option>
+      </select>
+    </label>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit" [disabled]="loading()">{{ loading() ? 'Saving…' : (isEdit() ? 'Save changes' : 'Book loan') }}</button>
+    </div>
+  </form>
+}

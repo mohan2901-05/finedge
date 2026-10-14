@@ -1,0 +1,52 @@
+<div class="page-head">
+  <div><h1>Roles</h1><p class="muted">{{ totalElements() }} total</p></div>
+  <a class="btn btn-primary" routerLink="/roles/new" [queryParams]="orgId ? { orgId: orgId } : {}">+ New role</a>
+</div>
+
+<form class="toolbar" (ngSubmit)="onFilter()">
+  <label class="sr-only" for="org">Filter by organization</label>
+  <select id="org" name="orgId" [(ngModel)]="orgId" (change)="onFilter()">
+    <option value="">All organizations</option>
+    @for (o of orgOptions(); track o.orgId) {
+      <option [value]="o.orgId">{{ o.orgName }}</option>
+    }
+  </select>
+  <button class="btn btn-secondary" type="submit">Filter</button>
+</form>
+
+@if (loading()) {
+  <app-loading message="Loading roles…" />
+} @else if (error()) {
+  <div class="alert alert-error" role="alert">{{ error() }} <button class="btn btn-ghost" (click)="load()">Retry</button></div>
+} @else if (!items().length) {
+  <div class="card"><app-empty-state title="No roles found" message="Try a different filter or add a new role." icon="🛡️" /></div>
+} @else {
+  <div class="card table-wrap"><table>
+    <thead><tr><th>Role</th><th>Organization</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      @for (r of items(); track r.roleId) {
+        <tr>
+          <td><a [routerLink]="['/roles', r.roleId]">{{ r.roleName }}</a><div class="muted small">{{ r.roleId }}</div></td>
+          <td>{{ r.orgName || r.orgId }}</td>
+          <td><span class="badge status-{{ r.status }}">{{ r.status }}</span></td>
+          <td class="row-actions">
+            <a class="btn btn-ghost" [routerLink]="['/roles', r.roleId]">View</a>
+            <a class="btn btn-ghost" [routerLink]="['/roles', r.roleId, 'edit']">Edit</a>
+            <button class="btn btn-ghost danger" type="button" (click)="askDelete(r)" [attr.aria-label]="'Delete ' + r.roleName">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table></div>
+  <div class="pager">
+    <button class="btn btn-ghost" (click)="prev()" [disabled]="page === 0">← Prev</button>
+    <span>Page {{ page + 1 }} of {{ totalPages() }}</span>
+    <button class="btn btn-ghost" (click)="next()" [disabled]="page + 1 >= totalPages()">Next →</button>
+  </div>
+}
+
+@if (pendingDelete) {
+  <app-confirm-dialog title="Delete role?"
+    [message]="'Delete role ' + (pendingDelete.roleName || pendingDelete.roleId) + '? Its users, assignments and dependent records will also be deleted by the database.'"
+    (confirmed)="confirmDelete()" (cancelled)="pendingDelete = null" />
+}

@@ -1,59 +1,67 @@
 package com.finedge.controller;
 
+import com.finedge.dto.LoanApplicationCreateRequest;
 import com.finedge.dto.LoanApplicationDTO;
-import com.finedge.dto.LoanCreateRequest;
-import com.finedge.dto.LoanUpdateRequest;
+import com.finedge.dto.LoanApplicationUpdateRequest;
 import com.finedge.dto.PageResponse;
-import com.finedge.entity.LoanStatus;
-import com.finedge.entity.LoanType;
 import com.finedge.service.LoanApplicationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/loans")
+@RequestMapping("/api/etfdb/loan-applications")
 public class LoanApplicationController {
 
-    private final LoanApplicationService loanApplicationService;
+    private final LoanApplicationService applicationService;
 
-    public LoanApplicationController(LoanApplicationService loanApplicationService) {
-        this.loanApplicationService = loanApplicationService;
+    public LoanApplicationController(LoanApplicationService applicationService) {
+        this.applicationService = applicationService;
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<LoanApplicationDTO>> getLoans(
-            @RequestParam(required = false) Long customerId,
-            @RequestParam(required = false) LoanType loanType,
-            @RequestParam(required = false) LoanStatus status,
-            @RequestParam(required = false) String search,
+    public ResponseEntity<PageResponse<LoanApplicationDTO>> list(
+            @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(loanApplicationService.getLoans(customerId, loanType, status, search, page, size));
+        return ResponseEntity.ok(applicationService.list(status, page, size));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LoanApplicationDTO> getLoanById(@PathVariable Long id) {
-        return ResponseEntity.ok(loanApplicationService.getLoanById(id));
+    public ResponseEntity<LoanApplicationDTO> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(applicationService.getById(id));
+    }
+
+    @GetMapping("/ref/{ref}")
+    public ResponseEntity<LoanApplicationDTO> getByRef(@PathVariable String ref) {
+        return ResponseEntity.ok(applicationService.getByRef(ref));
     }
 
     @PostMapping
-    public ResponseEntity<LoanApplicationDTO> createLoan(@Valid @RequestBody LoanCreateRequest request) {
-        LoanApplicationDTO created = loanApplicationService.createLoan(request);
+    public ResponseEntity<LoanApplicationDTO> create(@Valid @RequestBody LoanApplicationCreateRequest request) {
+        LoanApplicationDTO created = applicationService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LoanApplicationDTO> updateLoan(
-            @PathVariable Long id,
-            @Valid @RequestBody LoanUpdateRequest request) {
-        return ResponseEntity.ok(loanApplicationService.updateLoan(id, request));
+    public ResponseEntity<LoanApplicationDTO> update(
+            @PathVariable Integer id,
+            @Valid @RequestBody LoanApplicationUpdateRequest request) {
+        return ResponseEntity.ok(applicationService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLoan(@PathVariable Long id) {
-        loanApplicationService.deleteLoan(id);
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        applicationService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

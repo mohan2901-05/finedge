@@ -1,54 +1,51 @@
 package com.finedge.dto;
 
-import com.finedge.entity.LoanStatus;
-import com.finedge.entity.LoanType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Intake response. {@code customerPan} is intentionally absent — PAN values
+ * are never returned by this API (accepted on create, stored, never read
+ * back through DTOs).
+ */
 public class LoanApplicationDTO {
-    private Long id;
-    private String applicationNumber;
-    private Long customerId;
+    private Integer id;
+    private String ref;
     private String customerName;
+    private String customerPhone;
     private String customerEmail;
-    private LoanType loanType;
-    private BigDecimal requestedAmount;
-    private BigDecimal interestRate;
+    private LocalDate customerDob;
+    private String customerCity;
+    private String customerAddress;
+    private String financierKey;
+    private String financierLabel;
+    private BigDecimal loanAmount;
     private Integer tenureMonths;
-    private String purpose;
-    private LoanStatus status;
-    private LocalDate applicationDate;
-    private String reviewedBy;
-    private String rejectionReason;
+    private BigDecimal interestRate;
+    private BigDecimal emi;
+    private BigDecimal totalInterest;
+    private BigDecimal totalPayable;
+    private String status;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public LoanApplicationDTO() {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getApplicationNumber() {
-        return applicationNumber;
+    public String getRef() {
+        return ref;
     }
 
-    public void setApplicationNumber(String applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     public String getCustomerName() {
@@ -59,6 +56,14 @@ public class LoanApplicationDTO {
         this.customerName = customerName;
     }
 
+    public String getCustomerPhone() {
+        return customerPhone;
+    }
+
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
+    }
+
     public String getCustomerEmail() {
         return customerEmail;
     }
@@ -67,28 +72,52 @@ public class LoanApplicationDTO {
         this.customerEmail = customerEmail;
     }
 
-    public LoanType getLoanType() {
-        return loanType;
+    public LocalDate getCustomerDob() {
+        return customerDob;
     }
 
-    public void setLoanType(LoanType loanType) {
-        this.loanType = loanType;
+    public void setCustomerDob(LocalDate customerDob) {
+        this.customerDob = customerDob;
     }
 
-    public BigDecimal getRequestedAmount() {
-        return requestedAmount;
+    public String getCustomerCity() {
+        return customerCity;
     }
 
-    public void setRequestedAmount(BigDecimal requestedAmount) {
-        this.requestedAmount = requestedAmount;
+    public void setCustomerCity(String customerCity) {
+        this.customerCity = customerCity;
     }
 
-    public BigDecimal getInterestRate() {
-        return interestRate;
+    public String getCustomerAddress() {
+        return customerAddress;
     }
 
-    public void setInterestRate(BigDecimal interestRate) {
-        this.interestRate = interestRate;
+    public void setCustomerAddress(String customerAddress) {
+        this.customerAddress = customerAddress;
+    }
+
+    public String getFinancierKey() {
+        return financierKey;
+    }
+
+    public void setFinancierKey(String financierKey) {
+        this.financierKey = financierKey;
+    }
+
+    public String getFinancierLabel() {
+        return financierLabel;
+    }
+
+    public void setFinancierLabel(String financierLabel) {
+        this.financierLabel = financierLabel;
+    }
+
+    public BigDecimal getLoanAmount() {
+        return loanAmount;
+    }
+
+    public void setLoanAmount(BigDecimal loanAmount) {
+        this.loanAmount = loanAmount;
     }
 
     public Integer getTenureMonths() {
@@ -99,44 +128,44 @@ public class LoanApplicationDTO {
         this.tenureMonths = tenureMonths;
     }
 
-    public String getPurpose() {
-        return purpose;
+    public BigDecimal getInterestRate() {
+        return interestRate;
     }
 
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
+    public void setInterestRate(BigDecimal interestRate) {
+        this.interestRate = interestRate;
     }
 
-    public LoanStatus getStatus() {
+    public BigDecimal getEmi() {
+        return emi;
+    }
+
+    public void setEmi(BigDecimal emi) {
+        this.emi = emi;
+    }
+
+    public BigDecimal getTotalInterest() {
+        return totalInterest;
+    }
+
+    public void setTotalInterest(BigDecimal totalInterest) {
+        this.totalInterest = totalInterest;
+    }
+
+    public BigDecimal getTotalPayable() {
+        return totalPayable;
+    }
+
+    public void setTotalPayable(BigDecimal totalPayable) {
+        this.totalPayable = totalPayable;
+    }
+
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(LoanStatus status) {
+    public void setStatus(String status) {
         this.status = status;
-    }
-
-    public LocalDate getApplicationDate() {
-        return applicationDate;
-    }
-
-    public void setApplicationDate(LocalDate applicationDate) {
-        this.applicationDate = applicationDate;
-    }
-
-    public String getReviewedBy() {
-        return reviewedBy;
-    }
-
-    public void setReviewedBy(String reviewedBy) {
-        this.reviewedBy = reviewedBy;
-    }
-
-    public String getRejectionReason() {
-        return rejectionReason;
-    }
-
-    public void setRejectionReason(String rejectionReason) {
-        this.rejectionReason = rejectionReason;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -145,13 +174,5 @@ public class LoanApplicationDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

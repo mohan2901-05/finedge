@@ -1,9 +1,0 @@
-.head-actions { display: flex; gap: .5rem; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-.dl div { display: flex; justify-content: space-between; gap: 1rem; padding: .4rem 0; border-bottom: 1px solid var(--border); }
-.dl dt { color: var(--muted); }
-.dl dd { margin: 0; font-weight: 600; text-align: right; }
-.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
-.list li { display: flex; gap: .6rem; align-items: center; }
-.card-head { display: flex; justify-content: space-between; align-items: center; }
-@media (max-width: 860px) { .grid-2 { grid-template-columns: 1fr; } }

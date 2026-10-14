@@ -1,0 +1,32 @@
+<div class="page-head">
+  <div><h1>Overview</h1><p class="muted">Server-reported totals · local development</p></div>
+</div>
+
+@if (loading()) {
+  <app-loading message="Loading overview…" />
+} @else if (error()) {
+  <div class="alert alert-error" role="alert">{{ error() }}</div>
+} @else {
+  <div class="card-grid">
+    @for (c of cards(); track c.label) {
+      <a class="card stat" [routerLink]="c.path">
+        <div class="stat-value">{{ c.total }}</div>
+        <div class="stat-label">{{ c.label }}</div>
+      </a>
+    }
+  </div>
+
+  <div class="card">
+    <h2>Recent audit entries</h2>
+    @if (!recentAudit().length) {
+      <app-empty-state title="No audit entries yet" message="Recorded actions will appear here." icon="📋" />
+    } @else {
+      <ul class="link-list">
+        @for (a of recentAudit(); track a.auditId) {
+          <li>{{ a.action }} — {{ a.userName }} <span class="muted small">{{ a.createdDatetime }}</span></li>
+        }
+      </ul>
+    }
+    <a class="btn btn-secondary" routerLink="/audit">Open audit trail</a>
+  </div>
+}

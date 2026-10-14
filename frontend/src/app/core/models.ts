@@ -1,152 +1,330 @@
-export type CustomerStatus = 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
-export type AccountType = 'CHECKING' | 'SAVINGS' | 'BUSINESS' | 'MONEY_MARKET';
-export type AccountStatus = 'ACTIVE' | 'DORMANT' | 'FROZEN' | 'CLOSED';
-export type TransactionType = 'DEPOSIT' | 'WITHDRAWAL' | 'TRANSFER_IN' | 'TRANSFER_OUT' | 'PAYMENT' | 'FEE';
-export type TransactionStatus = 'COMPLETED' | 'PENDING' | 'FAILED' | 'REVERSED';
-export type LoanType = 'PERSONAL' | 'MORTGAGE' | 'AUTO' | 'BUSINESS' | 'EDUCATION';
-export type LoanStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+// FinEdge ETFDB API models. Field names match the backend DTO JSON exactly.
+// IDs are strings (application-assigned), except loan intake (number).
+// Responses never contain password or PAN values.
 
-export interface Customer {
+export interface Organization {
+  orgId: string;
+  orgName: string;
+  orgEmail: string;
+  status: string;
+  createdDatetime: string;
+  updatedDatetime: string;
+}
+
+export interface OrganizationCreateRequest {
+  orgName: string;
+  orgEmail: string;
+  status?: string;
+}
+
+export interface OrganizationUpdateRequest {
+  orgName?: string;
+  orgEmail?: string;
+  status?: string;
+}
+
+export interface Role {
+  roleId: string;
+  orgId: string;
+  orgName?: string;
+  roleName: string;
+  roleDescription?: string;
+  status: string;
+  createdDatetime: string;
+  updatedDatetime: string;
+}
+
+export interface RoleCreateRequest {
+  orgId: string;
+  roleName: string;
+  roleDescription?: string;
+  status?: string;
+}
+
+export interface RoleUpdateRequest {
+  roleName?: string;
+  roleDescription?: string;
+  status?: string;
+}
+
+export interface User {
+  userId: string;
+  orgId: string;
+  roleId: string;
+  roleName?: string;
+  userName: string;
+  userEmail: string;
+  dob?: string;
+  status: string;
+  createdDatetime: string;
+  updatedDatetime: string;
+}
+
+export interface UserCreateRequest {
+  orgId: string;
+  roleId: string;
+  userName: string;
+  password: string;
+  userEmail: string;
+  dob?: string;
+  panNo?: string;
+  status?: string;
+}
+
+export interface UserUpdateRequest {
+  userName?: string;
+  userEmail?: string;
+  dob?: string;
+  roleId?: string;
+  status?: string;
+}
+
+export interface Module {
+  moduleId: string;
+  moduleName: string;
+  moduleCode: string;
+  createdDatetime: string;
+  updatedDatetime: string;
+}
+
+export interface ModuleCreateRequest {
+  moduleName: string;
+  moduleCode: string;
+}
+
+export interface ModuleUpdateRequest {
+  moduleName?: string;
+  moduleCode?: string;
+}
+
+export interface Permission {
+  permissionId: string;
+  permissionName: string;
+  permissionCode: string;
+  createdDatetime: string;
+  updatedDatetime: string;
+}
+
+export interface PermissionCreateRequest {
+  permissionName: string;
+  permissionCode: string;
+}
+
+export interface PermissionUpdateRequest {
+  permissionName?: string;
+  permissionCode?: string;
+}
+
+export interface RoleMapping {
+  mappingId: string;
+  orgId: string;
+  roleId: string;
+  moduleId: string;
+  moduleCode?: string;
+  permissionId: string;
+  permissionCode?: string;
+  createdDatetime: string;
+  updatedDatetime: string;
+}
+
+export interface RoleMappingCreateRequest {
+  orgId: string;
+  roleId: string;
+  moduleId: string;
+  permissionId: string;
+}
+
+export interface Intake {
   id: number;
-  customerNumber: string;
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  status: CustomerStatus;
-  accountCount: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CustomerCreateRequest {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  status?: CustomerStatus;
-}
-
-export interface CustomerUpdateRequest {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  postalCode?: string;
-  status?: CustomerStatus;
-}
-
-export interface Account {
-  id: number;
-  accountNumber: string;
-  customerId: number;
+  ref: string;
   customerName: string;
+  customerPhone: string;
   customerEmail: string;
-  accountType: AccountType;
-  balance: number;
-  currency: string;
-  status: AccountStatus;
-  openedDate: string;
+  customerDob?: string;
+  customerCity: string;
+  customerAddress: string;
+  financierKey: string;
+  financierLabel: string;
+  loanAmount: number;
+  tenureMonths: number;
+  interestRate: number;
+  emi: number;
+  totalInterest: number;
+  totalPayable: number;
+  status: string;
   createdAt: string;
-  updatedAt: string;
 }
 
-export interface AccountCreateRequest {
-  customerId: number;
-  accountType: AccountType;
-  initialBalance: number;
-  currency?: string;
-  status?: AccountStatus;
-}
-
-export interface AccountUpdateRequest {
-  accountType?: AccountType;
-  status?: AccountStatus;
-}
-
-export interface Transaction {
-  id: number;
-  transactionReference: string;
-  accountId: number;
-  accountNumber: string;
+export interface IntakeCreateRequest {
+  ref: string;
   customerName: string;
-  transactionType: TransactionType;
-  amount: number;
-  balanceAfter: number;
-  description: string;
-  status: TransactionStatus;
-  transactionDate: string;
-  createdAt: string;
+  customerPhone: string;
+  customerEmail: string;
+  customerDob?: string;
+  customerPan?: string;
+  customerCity: string;
+  customerAddress: string;
+  financierKey: string;
+  financierLabel: string;
+  loanAmount: number;
+  tenureMonths: number;
+  interestRate: number;
+  emi: number;
+  totalInterest: number;
+  totalPayable: number;
+  status?: string;
 }
 
-export interface TransactionCreateRequest {
-  accountId: number;
-  transactionType: TransactionType;
-  amount: number;
-  description: string;
-}
-
-export interface TransactionUpdateRequest {
-  description?: string;
-  status?: TransactionStatus;
+export interface IntakeUpdateRequest {
+  customerName?: string;
+  customerPhone?: string;
+  customerEmail?: string;
+  customerDob?: string;
+  customerCity?: string;
+  customerAddress?: string;
+  financierKey?: string;
+  financierLabel?: string;
+  loanAmount?: number;
+  tenureMonths?: number;
+  interestRate?: number;
+  emi?: number;
+  totalInterest?: number;
+  totalPayable?: number;
+  status?: string;
 }
 
 export interface Loan {
-  id: number;
-  applicationNumber: string;
-  customerId: number;
-  customerName: string;
-  customerEmail: string;
-  loanType: LoanType;
-  requestedAmount: number;
+  loanId: string;
+  orgId: string;
+  userId: string;
+  loanAmount: number;
   interestRate: number;
   tenureMonths: number;
-  purpose: string;
-  status: LoanStatus;
-  applicationDate: string;
-  reviewedBy?: string;
-  rejectionReason?: string;
-  createdAt: string;
-  updatedAt: string;
+  purpose?: string;
+  applicationDate?: string;
+  approvalDate?: string;
+  disbursementDate?: string;
+  dueDate?: string;
+  outstandingAmount?: number;
+  received?: boolean;
+  status: string;
+  createdDatetime: string;
+  updatedDatetime: string;
 }
 
 export interface LoanCreateRequest {
-  customerId: number;
-  loanType: LoanType;
-  requestedAmount: number;
-  interestRate: number;
+  orgId: string;
+  userId: string;
+  loanAmount: number;
+  interestRate?: number;
   tenureMonths: number;
-  purpose: string;
+  purpose?: string;
+  applicationDate?: string;
+  approvalDate?: string;
+  disbursementDate?: string;
+  dueDate?: string;
+  outstandingAmount?: number;
+  received?: boolean;
+  status?: string;
 }
 
 export interface LoanUpdateRequest {
-  status: LoanStatus;
-  reviewedBy?: string;
-  rejectionReason?: string;
+  purpose?: string;
+  approvalDate?: string;
+  disbursementDate?: string;
+  dueDate?: string;
+  outstandingAmount?: number;
+  received?: boolean;
+  status?: string;
 }
 
-export interface DashboardSummary {
-  totalCustomers: number;
-  activeAccounts: number;
-  totalDeposits: number;
-  pendingLoans: number;
-  approvedLoans: number;
-  rejectedLoans: number;
-  accountsByType: Record<string, number>;
-  loansByStatus: Record<string, number>;
-  monthlyVolume: Record<string, number>;
+export interface LoanActivity {
+  activityId: string;
+  userId: string;
+  loanId: string;
+  activityCode: string;
+  statusCode: string;
+  updatedOn: string;
+}
+
+export interface LoanActivityCreateRequest {
+  userId: string;
+  loanId: string;
+  activityCode: string;
+  statusCode: string;
+}
+
+export interface Repayment {
+  repaymentId: string;
+  loanId: string;
+  installmentNumber: number;
+  dueDate: string;
+  openingPrincipal: number;
+  installmentAmount: number;
+  principal: number;
+  interest: number;
+  advanceFlag?: string;
+  closingPrincipal: number;
+  rate: number;
+  createdAt: string;
+}
+
+export interface RepaymentCreateRequest {
+  loanId: string;
+  installmentNumber: number;
+  dueDate: string;
+  openingPrincipal: number;
+  installmentAmount: number;
+  principal: number;
+  interest: number;
+  advanceFlag?: string;
+  closingPrincipal: number;
+  rate: number;
+}
+
+export interface Collection {
+  collectionId: string;
+  orgId: string;
+  loanId: string;
+  userId: string;
+  collectionAmount: number;
+  collectionDate?: string;
+  paymentMode?: string;
+  referenceNo?: string;
+  collectedByUserId?: string;
+  remarks?: string;
+  status?: string;
+  createdDatetime: string;
+  updatedDatetime: string;
+}
+
+export interface CollectionCreateRequest {
+  orgId: string;
+  loanId: string;
+  userId: string;
+  collectionAmount: number;
+  collectionDate?: string;
+  paymentMode?: string;
+  referenceNo?: string;
+  collectedByUserId?: string;
+  remarks?: string;
+  status?: string;
+}
+
+export interface CollectionUpdateRequest {
+  referenceNo?: string;
+  remarks?: string;
+  status?: string;
+}
+
+export interface AuditEntry {
+  auditId: string;
+  orgId: string;
+  userId: string;
+  userName: string;
+  action: string;
+  details?: string;
+  createdDatetime: string;
 }
 
 export interface PageResponse<T> {
@@ -162,5 +340,4 @@ export interface PageResponse<T> {
 export interface PageQuery {
   page?: number;
   size?: number;
-  search?: string;
 }
