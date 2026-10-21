@@ -289,7 +289,7 @@ class EtfdbMySqlParityTest {
     void defaults_CurrentDateFills() {
         Organization org = newOrg("105");
         RoleMaster role = newRole(org, "105");
-        UserInfo borrower = newUser(org, role, "105", "parity-105@example.invalid");
+        newUser(org, role, "105", "parity-105@example.invalid"); // side-effect: inserts row
 
         // Native inserts omit the date columns entirely so @PrePersist cannot
         // mask the database defaults under test.
