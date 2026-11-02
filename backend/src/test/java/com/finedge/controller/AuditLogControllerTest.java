@@ -4,13 +4,18 @@ import com.finedge.dto.AuditLogDTO;
 import com.finedge.dto.PageResponse;
 import com.finedge.exception.ResourceNotFoundException;
 import com.finedge.service.AuditService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -27,10 +32,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuditLogControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private WebApplicationContext webApplicationContext;
 
     @MockBean
     private AuditService auditService;
+
+    private MockMvc mvc;
+
+    @BeforeEach
+    void init() {
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .defaultRequest(get("/").with(
+                        SecurityMockMvcRequestPostProcessors.user("USR-TEST").roles("USER")))
+                .build();
+    }
 
     private AuditLogDTO dto(String id) {
         AuditLogDTO dto = new AuditLogDTO();
@@ -72,7 +88,8 @@ class AuditLogControllerTest {
         mvc.perform(post("/api/etfdb/audit-logs")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orgId\":\"ORG-1\",\"userId\":\"USR-1\","
-                                + "\"userName\":\"Test User\",\"action\":\"LOGIN\"}"))
+                                + "\"userName\":\"Test User\",\"action\":\"LOGIN\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.auditId").value("AUD-NEW"));
     }
@@ -82,7 +99,8 @@ class AuditLogControllerTest {
     void create_InvalidReturns400() throws Exception {
         mvc.perform(post("/api/etfdb/audit-logs")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"orgId\":\"\"}"))
+                        .content("{\"orgId\":\"\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isBadRequest());
     }
 }

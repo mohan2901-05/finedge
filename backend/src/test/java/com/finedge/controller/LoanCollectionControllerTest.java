@@ -4,13 +4,18 @@ import com.finedge.dto.LoanCollectionDTO;
 import com.finedge.dto.PageResponse;
 import com.finedge.exception.ResourceNotFoundException;
 import com.finedge.service.CollectionService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,10 +34,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LoanCollectionControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private WebApplicationContext webApplicationContext;
 
     @MockBean
     private CollectionService collectionService;
+
+    private MockMvc mvc;
+
+    @BeforeEach
+    void init() {
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .defaultRequest(get("/").with(
+                        SecurityMockMvcRequestPostProcessors.user("USR-TEST").roles("USER")))
+                .build();
+    }
 
     private LoanCollectionDTO dto(String id) {
         LoanCollectionDTO dto = new LoanCollectionDTO();
@@ -75,7 +91,8 @@ class LoanCollectionControllerTest {
         mvc.perform(post("/api/etfdb/collections")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orgId\":\"ORG-1\",\"loanId\":\"LOAN-1\","
-                                + "\"userId\":\"USR-1\",\"collectionAmount\":1000.00}"))
+                                + "\"userId\":\"USR-1\",\"collectionAmount\":1000.00}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.collectionId").value("COLL-NEW"));
     }
@@ -85,14 +102,16 @@ class LoanCollectionControllerTest {
     void create_InvalidReturns400() throws Exception {
         mvc.perform(post("/api/etfdb/collections")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"orgId\":\"\"}"))
+                        .content("{\"orgId\":\"\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("DELETE /api/etfdb/collections/{id} returns 204")
     void delete_Returns204() throws Exception {
-        mvc.perform(delete("/api/etfdb/collections/COLL-1"))
+        mvc.perform(delete("/api/etfdb/collections/COLL-1")
+                .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isNoContent());
     }
 }

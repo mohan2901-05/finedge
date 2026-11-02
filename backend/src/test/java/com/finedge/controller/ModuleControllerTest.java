@@ -4,13 +4,18 @@ import com.finedge.dto.ModuleDTO;
 import com.finedge.dto.PageResponse;
 import com.finedge.exception.ResourceNotFoundException;
 import com.finedge.service.ModuleService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -27,10 +32,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ModuleControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private WebApplicationContext webApplicationContext;
 
     @MockBean
     private ModuleService moduleService;
+
+    private MockMvc mvc;
+
+    @BeforeEach
+    void init() {
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .defaultRequest(get("/").with(
+                        SecurityMockMvcRequestPostProcessors.user("USR-TEST").roles("USER")))
+                .build();
+    }
 
     private ModuleDTO dto(String id) {
         ModuleDTO dto = new ModuleDTO();
@@ -69,7 +85,8 @@ class ModuleControllerTest {
 
         mvc.perform(post("/api/etfdb/modules")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"moduleName\":\"Loans\",\"moduleCode\":\"LOANS\"}"))
+                        .content("{\"moduleName\":\"Loans\",\"moduleCode\":\"LOANS\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.moduleId").value("MOD-NEW"));
     }
@@ -79,14 +96,16 @@ class ModuleControllerTest {
     void create_InvalidReturns400() throws Exception {
         mvc.perform(post("/api/etfdb/modules")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"moduleName\":\"\",\"moduleCode\":\"\"}"))
+                        .content("{\"moduleName\":\"\",\"moduleCode\":\"\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("DELETE /api/etfdb/modules/{id} returns 204")
     void delete_Returns204() throws Exception {
-        mvc.perform(delete("/api/etfdb/modules/MOD-1"))
+        mvc.perform(delete("/api/etfdb/modules/MOD-1")
+                .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isNoContent());
     }
 }

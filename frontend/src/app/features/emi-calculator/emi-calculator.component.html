@@ -1,0 +1,138 @@
+<div class="calculator">
+  <div class="calculator__header">
+    <a class="calculator__back" routerLink="/landing">← Back to FinEdge</a>
+    <h1 class="calculator__title">EMI Calculator</h1>
+    <p class="calculator__subtitle">Estimate your monthly loan repayment.</p>
+  </div>
+
+  <form class="calculator__form" novalidate>
+    <div class="field-group">
+      <label class="field-label" for="principal">Loan principal <span class="required">*</span></label>
+      <input
+        id="principal"
+        type="text"
+        [value]="principalValue"
+        (input)="onPrincipalChange($event.target.value)"
+        [attr.aria-invalid]="hasError('principal')"
+        [attr.aria-describedby]="hasError('principal') ? 'principal-error' : null"
+        autocomplete="off"
+      />
+      <p id="principal-error" class="field-error" *ngIf="hasError('principal')">
+        {{ errorFor('principal') }}
+      </p>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="rate">Annual interest rate (%) <span class="required">*</span></label>
+      <input
+        id="rate"
+        type="text"
+        [value]="rateValue"
+        (input)="onRateChange($event.target.value)"
+        [attr.aria-invalid]="hasError('rate')"
+        [attr.aria-describedby]="hasError('rate') ? 'rate-error' : null"
+        autocomplete="off"
+      />
+      <p id="rate-error" class="field-error" *ngIf="hasError('rate')">
+        {{ errorFor('rate') }}
+      </p>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="tenure">Loan tenure <span class="required">*</span></label>
+      <div class="tenure-toggle">
+        <button
+          type="button"
+          class="tenure-btn"
+          [class.active]="tenureUnitValue === 'months'"
+          (click)="setMonthsMode()"
+        >
+          Months
+        </button>
+        <button
+          type="button"
+          class="tenure-btn"
+          [class.active]="tenureUnitValue === 'years'"
+          (click)="setYearsMode()"
+        >
+          Years
+        </button>
+      </div>
+      <input
+        id="tenure"
+        type="text"
+        [value]="tenureValue"
+        (input)="tenureUnitValue === 'years' ? onTenureYearsChange($event.target.value) : onTenureMonthsChange($event.target.value)"
+        [attr.aria-invalid]="hasError('tenure')"
+        [attr.aria-describedby]="hasError('tenure') ? 'tenure-error' : null"
+        autocomplete="off"
+      />
+      <span class="tenure-unit">{{ tenureUnitValue }}</span>
+      <p id="tenure-error" class="field-error" *ngIf="hasError('tenure')">
+        {{ errorFor('tenure') }}
+      </p>
+    </div>
+
+    <button type="button" class="btn btn-reset" (click)="reset()">Reset to defaults</button>
+  </form>
+
+  @if (calc) {
+    @if (calc.valid && calc.result) {
+      <div class="results">
+        <div class="results__main">
+          <h2 class="results__label">Monthly EMI</h2>
+          <div class="results__emi">{{ formatIndianCurrency(calc.result.emi) }}</div>
+          <p class="results__note">Estimated monthly instalment.</p>
+        </div>
+
+        <div class="results__breakdown">
+          <div class="breakdown-item">
+            <span class="breakdown__label">Total interest</span>
+            <span class="breakdown__value">{{ formatIndianCurrency(calc.result.totalInterest) }}</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown__label">Total repayment</span>
+            <span class="breakdown__value">{{ formatIndianCurrency(calc.result.totalRepayment) }}</span>
+          </div>
+        </div>
+
+        <div class="results__chart">
+          <div class="chart__label">Principal vs Interest</div>
+          <div class="chart__bar">
+            <div
+              class="chart__segment chart__segment--principal"
+              [style.width.%]="principalShare"
+              [attr.title]="'Principal: ' + formatIndianCurrency(calc.result.principal)"
+            ></div>
+            <div
+              class="chart__segment chart__segment--interest"
+              [style.width.%]="interestShare"
+              [attr.title]="'Interest: ' + formatIndianCurrency(calc.result.totalInterest)"
+            ></div>
+          </div>
+          <div class="chart__legend">
+            <span class="legend__item">
+              <span class="legend__color legend__color--principal"></span>
+              Principal
+            </span>
+            <span class="legend__item">
+              <span class="legend__color legend__color--interest"></span>
+              Interest
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <p class="results__disclaimer">
+        These figures are estimates for demonstration purposes only. Actual terms
+        may vary based on the financier&#39;s offer, fees, and final agreement.
+      </p>
+    } @else {
+      <div class="results">
+        <p class="results__note results--note">
+          Please correct the errors above to see your estimated EMI.
+        </p>
+      </div>
+    }
+  }
+</div>

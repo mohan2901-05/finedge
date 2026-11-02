@@ -172,3 +172,71 @@ input:focus, select:focus, button:focus-visible, a:focus-visible {
   .card { padding: 1rem; }
   .page-head { flex-direction: column; }
 }
+
+/* Shared public page styles — used by welcome, landing, placeholders, EMI calculator */
+.page-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.page-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 3rem;
+}
+
+.page-heading__mark {
+  width: 32px;
+  height: 32px;
+}
+
+.page-heading__title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: #0f172a;
+}
+
+.page-heading__subtitle {
+  font-size: 1.05rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 2rem;
+  max-width: 44rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+  color: #0f172a;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 2rem;
+}
+
+.action-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .page-container {
+    padding: 0 1rem;
+  }
+  .page-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+

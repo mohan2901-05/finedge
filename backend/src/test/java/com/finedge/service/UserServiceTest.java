@@ -19,6 +19,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -28,6 +29,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.mockito.ArgumentMatchers;
@@ -52,6 +54,9 @@ class UserServiceTest {
 
     @Mock
     private StringIdGenerator idGenerator;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserService userService;
@@ -81,23 +86,23 @@ class UserServiceTest {
         stubParents();
         when(userRepository.existsByUserEmail("user@example.invalid")).thenReturn(false);
         when(idGenerator.generateUnique(anyString(), ArgumentMatchers.<Predicate<String>>any())).thenReturn("USR-ABC123");
+        when(passwordEncoder.encode("secret-value")).thenReturn("hashed-secret-value");
         when(userRepository.save(any(UserInfo.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         UserDTO created = userService.create(createRequest());
 
         assertEquals("USR-ABC123", created.getUserId());
-        // UserDTO exposes no password/pan accessors by construction; the
-        // compile-time absence plus this response-shape test guard it.
         assertEquals("user@example.invalid", created.getUserEmail());
-        // The entity keeps the password exactly as received (write-only input);
-        // only the DTO is asserted secret-free above.
+        // The password must be hashed before persistence, never stored plaintext.
         ArgumentCaptor<UserInfo> saved = ArgumentCaptor.forClass(UserInfo.class);
         verify(userRepository).save(saved.capture());
+        verify(passwordEncoder).encode("secret-value");
+        assertEquals("hashed-secret-value", saved.getValue().getPassword());
+        assertNotEquals("secret-value", saved.getValue().getPassword());
         assertEquals("USR-ABC123", saved.getValue().getUserId());
         assertEquals("Test User", saved.getValue().getUserName());
         assertEquals("user@example.invalid", saved.getValue().getUserEmail());
-        assertEquals("secret-value", saved.getValue().getPassword());
         assertEquals("ACTIVE", saved.getValue().getStatus());
         assertEquals("ORG-1", saved.getValue().getOrganization().getOrgId());
         assertEquals("ROLE-1", saved.getValue().getRole().getRoleId());

@@ -1,0 +1,77 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.finedge:finedge-backend >---------------------
+[INFO] Building finedge-backend 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ finedge-backend ---
+[INFO] Copying 4 resources from src\main\resources to target\classes
+[INFO] Copying 11 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ finedge-backend ---
+[INFO] Changes detected - recompiling the module! :input tree
+[INFO] Compiling 120 source files with javac [debug release 17] to target\classes
+[INFO] /D:/projects/finedge/backend/src/main/java/com/finedge/security/JwtService.java: D:\projects\finedge\backend\src\main\java\com\finedge\security\JwtService.java uses or overrides a deprecated API.
+[INFO] /D:/projects/finedge/backend/src/main/java/com/finedge/security/JwtService.java: Recompile with -Xlint:deprecation for details.
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[150,12] cannot find symbol
+  symbol:   class PageResponse
+  location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[150,25] cannot find symbol
+  symbol:   class RepaymentDTO
+  location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[185,13] cannot find symbol
+  symbol:   class RepaymentDTO
+  location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[154,14] cannot find symbol
+  symbol:   class RepaymentDTO
+  location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[157,16] cannot find symbol
+  symbol:   variable PageResponse
+  location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[186,9] cannot find symbol
+  symbol:   class RepaymentDTO
+  location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[186,32] cannot find symbol
+  symbol:   class RepaymentDTO
+  location: class com.finedge.service.LoanDisbursementService
+[INFO] 7 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  14.735 s
+[INFO] Finished at: 2026-10-29T09:04:10+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:compile (default-compile) on project finedge-backend: Compilation failure: Compilation failure: 
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[150,12] cannot find symbol
+[ERROR]   symbol:   class PageResponse
+[ERROR]   location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[150,25] cannot find symbol
+[ERROR]   symbol:   class RepaymentDTO
+[ERROR]   location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[185,13] cannot find symbol
+[ERROR]   symbol:   class RepaymentDTO
+[ERROR]   location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[154,14] cannot find symbol
+[ERROR]   symbol:   class RepaymentDTO
+[ERROR]   location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[157,16] cannot find symbol
+[ERROR]   symbol:   variable PageResponse
+[ERROR]   location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[186,9] cannot find symbol
+[ERROR]   symbol:   class RepaymentDTO
+[ERROR]   location: class com.finedge.service.LoanDisbursementService
+[ERROR] /D:/projects/finedge/backend/src/main/java/com/finedge/service/LoanDisbursementService.java:[186,32] cannot find symbol
+[ERROR]   symbol:   class RepaymentDTO
+[ERROR]   location: class com.finedge.service.LoanDisbursementService
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

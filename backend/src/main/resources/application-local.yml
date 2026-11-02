@@ -35,3 +35,13 @@ spring:
 finedge:
   cors:
     allowed-origins: "http://localhost:4200,http://127.0.0.1:4200"
+
+  # Authentication (Part D2). Local development configuration: registration
+  # assigns the seeded BORROWER role and ORG-T001 organisation. These values
+  # reference records seeded by V2 and V7 migrations. Production must supply
+  # its own values via FINEDGE_AUTH_DEFAULT_ORG_ID /
+  # FINEDGE_AUTH_DEFAULT_BORROWER_ROLE_ID environment variables; blank values
+  # fail closed (registration rejected).
+  auth:
+    default-org-id: ${FINEDGE_AUTH_DEFAULT_ORG_ID:ORG-T001}
+    default-borrower-role-id: ${FINEDGE_AUTH_DEFAULT_BORROWER_ROLE_ID:ROLE-T04}

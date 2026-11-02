@@ -1,0 +1,127 @@
+<div class="dashboard">
+  <header class="dashboard__header">
+    <div class="shell">
+      <div class="dashboard__brand">
+        <app-logo [size]="logoSize" aria-label="FinEdge" />
+        <span class="dashboard__brand-name">FinEdge</span>
+      </div>
+      <nav class="dashboard__nav">
+        <a class="nav-link" routerLink="/landing">Back to landing</a>
+        <a class="nav-link" routerLink="/emi-calculator">EMI calculator</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="dashboard__main">
+    <div class="shell">
+      <div class="dashboard__head">
+        <div class="dashboard__title-group">
+          <h1 class="dashboard__title">Your Dashboard</h1>
+          <p class="dashboard__subtitle">
+            Track your loan applications and their status.
+          </p>
+        </div>
+        <a class="btn btn-primary" routerLink="/borrower">Apply for another loan</a>
+      </div>
+
+      <!-- Summary metrics -->
+      <div class="dashboard__summary">
+        <div class="stat">
+          <span class="stat__value">{{ totalElements() }}</span>
+          <span class="stat__label">Total applications</span>
+        </div>
+        <div class="stat stat--pending">
+          <span class="stat__value">{{ countByStatus('Pending Review') }}</span>
+          <span class="stat__label">Pending</span>
+        </div>
+        <div class="stat stat--approved">
+          <span class="stat__value">{{ countByStatus('Approved') }}</span>
+          <span class="stat__label">Approved</span>
+        </div>
+        <div class="stat stat--rejected">
+          <span class="stat__value">{{ countByStatus('Rejected') }}</span>
+          <span class="stat__label">Rejected</span>
+        </div>
+      </div>
+
+      @if (loading()) {
+        <app-loading message="Loading your applications…" />
+      } @else if (error()) {
+        <div class="alert alert-error" role="alert">
+          {{ error() }}
+          <button class="btn btn-ghost" (click)="retry()" aria-label="Retry">Retry</button>
+        </div>
+      } @else if (!applications().length) {
+        <div class="card">
+          <app-empty-state
+            title="No applications yet"
+            message="You haven't submitted any loan applications. Apply for a loan to get started."
+            icon="📝"
+          >
+            <a class="btn btn-primary" routerLink="/borrower">Apply for a loan</a>
+          </app-empty-state>
+        </div>
+      } @else {
+        <!-- Status filter -->
+        <form class="toolbar" (ngSubmit)="onFilterChange()">
+          <label class="sr-only" for="dashboard-status">Filter by status</label>
+          <select
+            id="dashboard-status"
+            name="status"
+            [(ngModel)]="statusFilter"
+            (change)="onFilterChange()"
+          >
+            <option value="">All statuses</option>
+            <option value="Pending Review">Pending Review</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+          <button class="btn btn-ghost" type="button" (click)="clearFilter()">Clear</button>
+        </form>
+
+        <div class="card table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>Financier</th>
+                <th>Amount</th>
+                <th>Tenure</th>
+                <th>EMI</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (app of applications(); track app.id) {
+                <tr>
+                  <td>
+                    <a [routerLink]="['/dashboard/application', app.id]" class="ref-link">{{ app.ref }}</a>
+                  </td>
+                  <td>{{ app.financierLabel }}</td>
+                  <td class="amount">{{ formatCurrency(app.loanAmount) }}</td>
+                  <td>{{ app.tenureMonths }} months</td>
+                  <td class="amount">{{ formatCurrency(app.emi) }}</td>
+                  <td>
+                    <span class="badge {{ statusBadgeClass(app.status) }}">{{ app.status }}</span>
+                  </td>
+                  <td class="muted small">{{ app.createdAt }}</td>
+                  <td class="row-actions">
+                    <a
+                      class="btn btn-ghost"
+                      [routerLink]="['/dashboard/application', app.id]"
+                      [attr.aria-label]="'View application ' + app.ref"
+                    >
+                      View
+                    </a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </main>
+</div>

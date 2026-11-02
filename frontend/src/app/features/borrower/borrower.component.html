@@ -1,0 +1,310 @@
+<div class="borrower">
+  <header class="borrower__header">
+    <div class="shell">
+      <div class="borrower__brand">
+        <app-logo [size]="logoSize" aria-label="FinEdge" />
+        <span class="borrower__brand-name">FinEdge</span>
+      </div>
+      <nav class="borrower__nav">
+        <a class="nav-link" routerLink="/landing">Back to landing</a>
+        <a class="nav-link" routerLink="/emi-calculator">EMI calculator</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="borrower__main">
+    <div class="shell">
+      <div class="borrower__head">
+        <div class="borrower__title-group">
+          <h1 class="borrower__title">Apply for a Loan</h1>
+          <p class="borrower__subtitle">
+            Submit a loan application and receive an application reference.
+            Estimated EMI is calculated from your inputs — actual terms depend on
+            the financier and final agreement.
+          </p>
+        </div>
+      </div>
+
+      @if (showForm()) {
+        <form class="borrower__form" novalidate (ngSubmit)="submitApplication()">
+          <div class="form-section">
+            <h2 class="form-section__title">Your Details</h2>
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="field-label" for="borrower-name">Full Name <span class="required">*</span></label>
+                <input
+                  id="borrower-name"
+                  type="text"
+                  [(ngModel)]="form.customerName"
+                  name="customerName"
+                  placeholder="e.g. Ravi Sharma"
+                  [class.invalid]="!form.customerName.trim()"
+                />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="borrower-phone">Phone <span class="required">*</span></label>
+                <input
+                  id="borrower-phone"
+                  type="tel"
+                  [(ngModel)]="form.customerPhone"
+                  name="customerPhone"
+                  placeholder="e.g. 9876543210"
+                  [class.invalid]="!form.customerPhone.trim()"
+                />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="borrower-email">Email <span class="required">*</span></label>
+                <input
+                  id="borrower-email"
+                  type="email"
+                  [(ngModel)]="form.customerEmail"
+                  name="customerEmail"
+                  placeholder="e.g. ravi@example.com"
+                  [class.invalid]="!form.customerEmail.trim()"
+                />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="borrower-city">City <span class="required">*</span></label>
+                <input
+                  id="borrower-city"
+                  type="text"
+                  [(ngModel)]="form.customerCity"
+                  name="customerCity"
+                  placeholder="e.g. Mumbai"
+                  [class.invalid]="!form.customerCity.trim()"
+                />
+              </div>
+              <div class="field-group full-width">
+                <label class="field-label" for="borrower-address">Address <span class="required">*</span></label>
+                <input
+                  id="borrower-address"
+                  type="text"
+                  [(ngModel)]="form.customerAddress"
+                  name="customerAddress"
+                  placeholder="e.g. 123 MG Road, Fort"
+                  [class.invalid]="!form.customerAddress.trim()"
+                />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="borrower-dob">Date of Birth</label>
+                <input
+                  id="borrower-dob"
+                  type="date"
+                  [(ngModel)]="form.customerDob"
+                  name="customerDob"
+                />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="borrower-pan">PAN Number</label>
+                <input
+                  id="borrower-pan"
+                  type="text"
+                  [(ngModel)]="form.customerPan"
+                  name="customerPan"
+                  placeholder="e.g. ABCDE1234F"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2 class="form-section__title">Loan Details</h2>
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="field-label" for="borrower-amount">Loan Amount (₹) <span class="required">*</span></label>
+                <input
+                  id="borrower-amount"
+                  type="text"
+                  [(ngModel)]="principal"
+                  name="principal"
+                  (input)="onPrincipalChange($event.target.value)"
+                  placeholder="e.g. 500000"
+                  [class.invalid]="principal() <= 0"
+                />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="borrower-rate">Annual Interest Rate (%) <span class="required">*</span></label>
+                <input
+                  id="borrower-rate"
+                  type="text"
+                  [(ngModel)]="annualRate"
+                  name="annualRate"
+                  (input)="onRateChange($event.target.value)"
+                  placeholder="e.g. 8.5"
+                  [class.invalid]="annualRate() < 0"
+                />
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="borrower-tenure">Loan Tenure <span class="required">*</span></label>
+                <div class="tenure-toggle">
+                  <button
+                    type="button"
+                    class="tenure-btn"
+                    [class.active]="tenureUnitValue() === 'months'"
+                    (click)="setMonthsMode()"
+                  >
+                    Months
+                  </button>
+                  <button
+                    type="button"
+                    class="tenure-btn"
+                    [class.active]="tenureUnitValue() === 'years'"
+                    (click)="setYearsMode()"
+                  >
+                    Years
+                  </button>
+                </div>
+                <input
+                  id="borrower-tenure"
+                  type="text"
+                  [(ngModel)]="tenureValue"
+                  name="tenure"
+                  placeholder="e.g. 24"
+                  [class.invalid]="tenureValue <= 0"
+                />
+                <span class="tenure-unit">{{ tenureUnitValue() }}</span>
+              </div>
+              <div class="field-group full-width">
+                <label class="field-label" for="borrower-financier">Financier <span class="required">*</span></label>
+                <select
+                  id="borrower-financier"
+                  [(ngModel)]="form.financierKey"
+                  name="financierKey"
+                >
+                  <option value="">Select a financier</option>
+                  @if (financiersLoading()) {
+                    <option disabled>Loading financiers…</option>
+                  } @else if (financiersError()) {
+                    <option disabled>{{ financiersError() }}</option>
+                  } @else {
+                    @for (f of financiers(); track f.key) {
+                      <option [value]="f.key">{{ f.label }}</option>
+                    }
+                  }
+                </select>
+                @if (!form.financierKey.trim() && !financiersLoading()) {
+                  <span class="field-error">Please select a financier.</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- EMI Estimate (preview only) -->
+          <div class="emi-estimate">
+            <div class="emi-estimate__header">
+              <h2 class="form-section__title">Estimated Monthly EMI (Preview)</h2>
+            </div>
+            <div class="emi-estimate__card">
+              @if (emi() !== null) {
+                <div class="emi-estimate__amount">
+                  <span class="emi-value">{{ formatIndianCurrency(emi() ?? 0) }}</span>
+                  <span class="emi-label">per month</span>
+                </div>
+                <div class="emi-breakdown">
+                  <div class="emi-breakdown__item">
+                    <span class="emi-breakdown__label">Total Interest</span>
+                    <span class="emi-breakdown__value">{{ formatIndianCurrency(totalInterest() ?? 0) }}</span>
+                  </div>
+                  <div class="emi-breakdown__item">
+                    <span class="emi-breakdown__label">Total Repayment</span>
+                    <span class="emi-breakdown__value">{{ formatIndianCurrency(totalPayable() ?? 0) }}</span>
+                  </div>
+                </div>
+                <p class="emi-disclaimer">
+                  Estimate based on your inputs. Actual EMI and totals are
+                  calculated by the server upon submission.
+                </p>
+              } @else {
+                <p class="emi-empty">Enter valid loan details to see your EMI estimate.</p>
+              }
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="submitting() || !canSubmit"
+            >
+              @if (submitting()) {
+                <span class="btn__spinner" aria-hidden="true"></span>
+                Submitting…
+              } @else {
+                Submit Application
+              }
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="reset()"
+              [disabled]="submitting()"
+            >
+              Reset
+            </button>
+          </div>
+        </form>
+      }
+
+      @if (error()) {
+        <div class="alert alert-error" role="alert">{{ error() }}</div>
+      }
+
+      @if (result()) {
+        <div class="borrower__success">
+          <div class="borrower__success-icon" aria-hidden="true">&#10003;</div>
+          <h2 class="borrower__success-title">Application Submitted</h2>
+          <p class="borrower__success-message">
+            Your loan application has been received.
+          </p>
+          <div class="borrower__success-details">
+            <div class="detail-row">
+              <span class="detail__label">Application Reference</span>
+              <span class="detail__value">{{ result()?.ref }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail__label">Status</span>
+              <span class="detail__value">{{ result()?.status }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail__label">Customer</span>
+              <span class="detail__value">{{ result()?.customerName }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail__label">Financier</span>
+              <span class="detail__value">{{ result()?.financierLabel }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail__label">Loan Amount</span>
+              <span class="detail__value">{{ formatIndianCurrency(result()?.loanAmount ?? 0) }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail__label">Monthly EMI</span>
+              <span class="detail__value">{{ formatIndianCurrency(result()?.emi ?? 0) }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail__label">Total Interest</span>
+              <span class="detail__value">{{ formatIndianCurrency(result()?.totalInterest ?? 0) }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail__label">Total Payable</span>
+              <span class="detail__value">{{ formatIndianCurrency(result()?.totalPayable ?? 0) }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail__label">Received At</span>
+              <span class="detail__value">{{ result()?.createdAt }}</span>
+            </div>
+          </div>
+          <p class="borrower__success-note">
+            The EMI, total interest, and total payable above are calculated by
+            the server. Save your application reference to track your
+            application once borrower tracking is implemented (Part E).
+          </p>
+          <div class="borrower__success-actions">
+            <button class="btn btn-primary" (click)="reset()">Submit Another</button>
+            <a class="btn btn-secondary" routerLink="/landing">Return to Landing</a>
+          </div>
+        </div>
+      }
+    </div>
+  </main>
+</div>

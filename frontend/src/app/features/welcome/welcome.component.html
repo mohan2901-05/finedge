@@ -1,0 +1,23 @@
+<div class="welcome" [class.welcome--reduced]="reducedMotion()">
+  <div class="welcome__inner">
+    <div class="brand">
+      <app-logo [size]="48" variant="light" aria-label="FinEdge" />
+      <span class="brand__name">FinEdge</span>
+    </div>
+
+    <h1 class="welcome__heading">A marketplace for lending.</h1>
+    <p class="welcome__lead">
+      FinEdge connects borrowers seeking financing with financiers offering funding.
+    </p>
+
+    <button class="btn btn-primary" (click)="continueToLanding()">
+      Enter FinEdge
+    </button>
+
+    @if (!reducedMotion()) {
+      <p class="welcome__auto">
+        Continuing to the landing page
+      </p>
+    }
+  </div>
+</div>

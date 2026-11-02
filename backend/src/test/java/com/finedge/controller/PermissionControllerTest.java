@@ -4,13 +4,18 @@ import com.finedge.dto.PageResponse;
 import com.finedge.dto.PermissionDTO;
 import com.finedge.exception.ResourceNotFoundException;
 import com.finedge.service.PermissionService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -27,10 +32,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PermissionControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private WebApplicationContext webApplicationContext;
 
     @MockBean
     private PermissionService permissionService;
+
+    private MockMvc mvc;
+
+    @BeforeEach
+    void init() {
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .defaultRequest(get("/").with(
+                        SecurityMockMvcRequestPostProcessors.user("USR-TEST").roles("USER")))
+                .build();
+    }
 
     private PermissionDTO dto(String id) {
         PermissionDTO dto = new PermissionDTO();
@@ -69,7 +85,8 @@ class PermissionControllerTest {
 
         mvc.perform(post("/api/etfdb/permissions")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"permissionName\":\"Approve\",\"permissionCode\":\"APPROVE\"}"))
+                        .content("{\"permissionName\":\"Approve\",\"permissionCode\":\"APPROVE\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.permissionId").value("PERM-NEW"));
     }
@@ -79,14 +96,16 @@ class PermissionControllerTest {
     void create_InvalidReturns400() throws Exception {
         mvc.perform(post("/api/etfdb/permissions")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"permissionName\":\"\",\"permissionCode\":\"\"}"))
+                        .content("{\"permissionName\":\"\",\"permissionCode\":\"\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("DELETE /api/etfdb/permissions/{id} returns 204")
     void delete_Returns204() throws Exception {
-        mvc.perform(delete("/api/etfdb/permissions/PERM-1"))
+        mvc.perform(delete("/api/etfdb/permissions/PERM-1")
+                .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isNoContent());
     }
 }

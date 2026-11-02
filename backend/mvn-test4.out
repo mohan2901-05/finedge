@@ -1,0 +1,188 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.finedge:finedge-backend >---------------------
+[INFO] Building finedge-backend 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ finedge-backend ---
+[INFO] Copying 4 resources from src\main\resources to target\classes
+[INFO] Copying 11 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ finedge-backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ finedge-backend ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ finedge-backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ finedge-backend ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.finedge.service.LoanRepaymentServiceTest
+[ERROR] Tests run: 8, Failures: 0, Errors: 8, Skipped: 0, Time elapsed: 0.203 s <<< FAILURE! -- in com.finedge.service.LoanRepaymentServiceTest
+[ERROR] com.finedge.service.LoanRepaymentServiceTest.recordRepayment_NotOwned_NotFound -- Time elapsed: 0.040 s <<< ERROR!
+java.lang.Error: 
+Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+	at com.finedge.service.LoanRepaymentServiceTest.<init>(LoanRepaymentServiceTest.java:23)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.finedge.service.LoanRepaymentServiceTest.recordRepayment_BeforeDisbursement_Rejected -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.Error: 
+Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+	at com.finedge.service.LoanRepaymentServiceTest.<init>(LoanRepaymentServiceTest.java:23)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.finedge.service.LoanRepaymentServiceTest.recordRepayment_ExcessiveAmount_Rejected -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.Error: 
+Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+	at com.finedge.service.LoanRepaymentServiceTest.<init>(LoanRepaymentServiceTest.java:23)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.finedge.service.LoanRepaymentServiceTest.recordRepayment_ZeroAmount_Rejected -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.Error: 
+Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+	at com.finedge.service.LoanRepaymentServiceTest.<init>(LoanRepaymentServiceTest.java:23)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.finedge.service.LoanRepaymentServiceTest.recordRepayment_NegativeAmount_Rejected -- Time elapsed: 0.004 s <<< ERROR!
+java.lang.Error: 
+Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+	at com.finedge.service.LoanRepaymentServiceTest.<init>(LoanRepaymentServiceTest.java:23)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.finedge.service.LoanRepaymentServiceTest.recordRepayment_ExactOutstanding_Allowed -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.Error: 
+Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+	at com.finedge.service.LoanRepaymentServiceTest.<init>(LoanRepaymentServiceTest.java:23)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.finedge.service.LoanRepaymentServiceTest.listRepayments_ReturnsPage -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.Error: 
+Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+	at com.finedge.service.LoanRepaymentServiceTest.<init>(LoanRepaymentServiceTest.java:23)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] com.finedge.service.LoanRepaymentServiceTest.recordRepayment_DisbursedLoan_Persists -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.Error: 
+Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+	at com.finedge.service.LoanRepaymentServiceTest.<init>(LoanRepaymentServiceTest.java:23)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Errors: 
+[ERROR]   LoanRepaymentServiceTest.<init>:23  Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+[ERROR]   LoanRepaymentServiceTest.<init>:23  Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+[ERROR]   LoanRepaymentServiceTest.<init>:23  Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+[ERROR]   LoanRepaymentServiceTest.<init>:23  Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+[ERROR]   LoanRepaymentServiceTest.<init>:23  Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+[ERROR]   LoanRepaymentServiceTest.<init>:23  Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+[ERROR]   LoanRepaymentServiceTest.<init>:23  Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+[ERROR]   LoanRepaymentServiceTest.<init>:23  Unresolved compilation problems: 
+	The import org.mockito.MockitoSettings cannot be resolved
+	MockitoSettings cannot be resolved to a type
+
+[INFO] 
+[ERROR] Tests run: 8, Failures: 0, Errors: 8, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  10.815 s
+[INFO] Finished at: 2026-10-29T09:09:17+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.1.2:test (default-test) on project finedge-backend: 
+[ERROR] 
+[ERROR] Please refer to D:\projects\finedge\backend\target\surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

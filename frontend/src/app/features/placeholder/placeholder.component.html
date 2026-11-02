@@ -1,0 +1,30 @@
+<div class="placeholder">
+  <div class="placeholder__card">
+    <div class="placeholder__brand">
+      <app-logo [size]="40" aria-label="FinEdge" />
+      <span class="placeholder__brand-name">FinEdge</span>
+    </div>
+
+    <h1 class="placeholder__title">{{ title }}</h1>
+    <p class="placeholder__subtitle">{{ subtitle }}</p>
+
+    <div class="placeholder__actions">
+      <a
+        class="btn btn-primary"
+        [routerLink]="primaryActionRoute"
+        >{{ primaryActionLabel }}</a
+      >
+      @if (secondaryActionLabel && secondaryActionRoute) {
+        <a
+          class="btn btn-secondary"
+          [routerLink]="secondaryActionRoute"
+          >{{ secondaryActionLabel }}</a
+        >
+      }
+    </div>
+
+    <p class="placeholder__note">
+      This feature is planned for a future release. Not a live lending service.
+    </p>
+  </div>
+</div>

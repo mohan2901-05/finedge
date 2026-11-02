@@ -1,0 +1,225 @@
+<div class="application-detail">
+  <header class="application-detail__header">
+    <div class="shell">
+      <div class="application-detail__brand">
+        <app-logo [size]="logoSize" aria-label="FinEdge" />
+        <span class="application-detail__brand-name">FinEdge</span>
+      </div>
+      <nav class="application-detail__nav">
+        <a class="nav-link" routerLink="/dashboard">Back to dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="application-detail__main">
+    <div class="shell">
+      @if (loading()) {
+        <app-loading message="Loading application…" />
+      } @else if (error()) {
+        <div class="card">
+          <div class="empty" style="text-align:center; padding: 3rem 1rem;">
+            <h2>{{ error() }}</h2>
+            <button class="btn btn-primary" (click)="retry()">Retry</button>
+            <button class="btn btn-ghost" (click)="backToDashboard()">Back to dashboard</button>
+          </div>
+        </div>
+      } @else if (application()) {
+        <div class="application-detail__head">
+          <div class="application-detail__title-group">
+            <h1 class="application-detail__title">Application Details</h1>
+            <p class="application-detail__subtitle">
+              Reference: <strong>{{ application()?.ref }}</strong>
+            </p>
+          </div>
+          <span class="badge {{ statusBadgeClass(application()?.status ?? '') }}">{{
+            application()?.status
+          }}</span>
+        </div>
+
+        <div class="card facts">
+          <div class="fact-row">
+            <span class="fact__label">Financier</span>
+            <span class="fact__value">{{ application()?.financierLabel }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Customer name</span>
+            <span class="fact__value">{{ application()?.customerName }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Customer email</span>
+            <span class="fact__value">{{ application()?.customerEmail }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Customer phone</span>
+            <span class="fact__value">{{ application()?.customerPhone }}</span>
+          </div>
+          @if (application()?.customerCity) {
+            <div class="fact-row">
+              <span class="fact__label">City</span>
+              <span class="fact__value">{{ application()?.customerCity }}</span>
+            </div>
+          }
+          @if (application()?.customerAddress) {
+            <div class="fact-row">
+              <span class="fact__label">Address</span>
+              <span class="fact__value">{{ application()?.customerAddress }}</span>
+            </div>
+          }
+          <div class="fact-row">
+            <span class="fact__label">Loan amount</span>
+            <span class="fact__value">{{ formatCurrency(application()?.loanAmount ?? 0) }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Interest rate</span>
+            <span class="fact__value">{{ application()?.interestRate }}%</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Tenure</span>
+            <span class="fact__value">{{ application()?.tenureMonths }} months</span>
+          </div>
+          <div class="fact-row fact-row--total">
+            <span class="fact__label">Monthly EMI</span>
+            <span class="fact__value">{{ formatCurrency(application()?.emi ?? 0) }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Total interest</span>
+            <span class="fact__value">{{ formatCurrency(application()?.totalInterest ?? 0) }}</span>
+          </div>
+          <div class="fact-row fact-row--total">
+            <span class="fact__label">Total payable</span>
+            <span class="fact__value">{{ formatCurrency(application()?.totalPayable ?? 0) }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Status</span>
+            <span class="fact__value">{{ application()?.status }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Submitted at</span>
+            <span class="fact__value">{{ application()?.createdAt }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Owned by</span>
+            <span class="fact__value">{{ application()?.custUserId }}</span>
+          </div>
+        </div>
+
+        <!-- Roadmap G — Disbursement and Repayment -->
+        <div class="card">
+          <h2 style="padding: 1rem; margin: 0 0 1rem; font-size: 1.125rem; font-weight: 700;">Disbursement & Repayment</h2>
+
+          @if (disbursementInfoLoading()) {
+            <app-loading message="Loading disbursement info…" />
+          } @else {
+            @if (disbursement()) {
+              <div class="facts">
+                <div class="fact-row">
+                  <span class="fact__label">Disbursed amount</span>
+                  <span class="fact__value">{{ formatCurrency(disbursement()?.disbursedAmount ?? 0) }}</span>
+                </div>
+                <div class="fact-row">
+                  <span class="fact__label">Disbursed at</span>
+                  <span class="fact__value">{{ disbursement()?.disbursedAt }}</span>
+                </div>
+                <div class="fact-row">
+                  <span class="fact__label">Disbursed by</span>
+                  <span class="fact__value">{{ disbursement()?.disbursedByUserId }}</span>
+                </div>
+              </div>
+            } @else {
+              <div class="facts" style="padding: 0.5rem 1rem; color: #64748b; font-size: 0.95rem;">
+                <p>Not disbursed yet.</p>
+              </div>
+            }
+
+            @if (outstanding()) {
+              <div class="facts">
+                <div class="fact-row fact-row--total">
+                  <span class="fact__label">Disbursed</span>
+                  <span class="fact__value">{{ outstanding()?.disbursed ? 'Yes' : 'No' }}</span>
+                </div>
+                <div class="fact-row">
+                  <span class="fact__label">Disbursed amount</span>
+                  <span class="fact__value">{{ formatCurrency(outstanding()?.disbursedAmount ?? 0) }}</span>
+                </div>
+                <div class="fact-row">
+                  <span class="fact__label">Total repaid</span>
+                  <span class="fact__value">{{ formatCurrency(outstanding()?.totalRepaid ?? 0) }}</span>
+                </div>
+                <div class="fact-row fact-row--total">
+                  <span class="fact__label">Outstanding balance</span>
+                  <span class="fact__value">{{ formatCurrency(outstanding()?.outstandingAmount ?? 0) }}</span>
+                </div>
+                <div class="fact-row">
+                  <span class="fact__label">Fully repaid</span>
+                  <span class="fact__value">{{ outstanding()?.fullyRepaid ? 'Yes' : 'No' }}</span>
+                </div>
+              </div>
+            } @else {
+              <div class="facts" style="padding: 0.5rem 1rem; color: #64748b; font-size: 0.95rem;">
+                <p>Balance not available.</p>
+              </div>
+            }
+
+            @if (disbursement() && !(outstanding()?.fullyRepaid)) {
+              <div style="padding: 1rem; border-top: 1px solid #f8fafc;">
+                <h3 style="margin: 0 0 0.75rem; font-size: 1rem; font-weight: 700;">Make a repayment</h3>
+                <form (ngSubmit)="submitRepayment()" style="display: flex; gap: 0.75rem; align-items: flex-end; flex-wrap: wrap;">
+                  <label style="display: flex; flex-direction: column; gap: 0.25rem; flex: 1 1 12rem;">
+                    <span style="font-size: 0.875rem; font-weight: 500;">Amount (INR)</span>
+                    <input
+                      type="number"
+                      [(ngModel)]="repaymentAmount"
+                      name="repaymentAmount"
+                      min="0.01"
+                      step="0.01"
+                      required
+                      [disabled]="repaymentSubmitting()"
+                      style="padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.95rem;"
+                    />
+                  </label>
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    [disabled]="repaymentSubmitting() || !repaymentAmount"
+                    style="padding: 0.5rem 1rem;"
+                  >
+                    @if (repaymentSubmitting()) {
+                      <span class="btn__spinner" aria-hidden="true"></span>
+                      Submitting…
+                    } @else {
+                      Submit repayment
+                    }
+                  </button>
+                </form>
+                @if (repaymentFormError()) {
+                  <p style="margin: 0.5rem 0 0; color: #b91c1c; font-size: 0.875rem;">{{ repaymentFormError() }}</p>
+                }
+              </div>
+            }
+
+            @if (repayments().length > 0) {
+              <h3 style="padding: 0 1rem; margin: 1.5rem 0 0.75rem; font-size: 1rem; font-weight: 700;">Repayment history</h3>
+              <div class="facts">
+                @for (r of repayments(); track r.repaymentId) {
+                  <div class="fact-row">
+                    <span class="fact__label">{{ r.repaymentAmount }} — {{ r.paidAt }}</span>
+                    <span class="fact__value">{{ r.paidByUserId }}</span>
+                  </div>
+                }
+              </div>
+            } @else if (disbursement()) {
+              <div class="facts" style="padding: 0.5rem 1rem; color: #64748b; font-size: 0.95rem;">
+                <p>No repayments recorded yet.</p>
+              </div>
+            }
+          }
+        </div>
+
+        <div class="application-detail__actions">
+          <button class="btn btn-primary" (click)="backToDashboard()">Back to dashboard</button>
+          <a class="btn btn-secondary" routerLink="/borrower">Apply for another loan</a>
+        </div>
+      }
+    </div>
+  </main>
+</div>

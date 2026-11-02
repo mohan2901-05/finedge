@@ -4,13 +4,18 @@ import com.finedge.dto.PageResponse;
 import com.finedge.dto.RepaymentDetailDTO;
 import com.finedge.exception.ResourceNotFoundException;
 import com.finedge.service.RepaymentService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,10 +34,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RepaymentControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private WebApplicationContext webApplicationContext;
 
     @MockBean
     private RepaymentService repaymentService;
+
+    private MockMvc mvc;
+
+    @BeforeEach
+    void init() {
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .defaultRequest(get("/").with(
+                        SecurityMockMvcRequestPostProcessors.user("USR-TEST").roles("USER")))
+                .build();
+    }
 
     private RepaymentDetailDTO dto(String id) {
         RepaymentDetailDTO dto = new RepaymentDetailDTO();
@@ -76,7 +92,8 @@ class RepaymentControllerTest {
                                 + "\"dueDate\":\"2026-02-07\",\"openingPrincipal\":120000.00,"
                                 + "\"installmentAmount\":1000.00,\"principal\":900.00,"
                                 + "\"interest\":100.00,\"closingPrincipal\":119100.00,"
-                                + "\"rate\":12.00}"))
+                                + "\"rate\":12.00}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.repaymentId").value("REP-NEW"));
     }
@@ -86,14 +103,16 @@ class RepaymentControllerTest {
     void create_InvalidReturns400() throws Exception {
         mvc.perform(post("/api/etfdb/repayments")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"loanId\":\"\"}"))
+                        .content("{\"loanId\":\"\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("DELETE /api/etfdb/repayments/{id} returns 204")
     void delete_Returns204() throws Exception {
-        mvc.perform(delete("/api/etfdb/repayments/REP-1"))
+        mvc.perform(delete("/api/etfdb/repayments/REP-1")
+                .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isNoContent());
     }
 }

@@ -8,10 +8,14 @@ import java.time.LocalDateTime;
  * Intake response. {@code customerPan} is intentionally absent — PAN values
  * are never returned by this API (accepted on create, stored, never read
  * back through DTOs).
+ *
+ * <p>Part D3: {@code custUserId} identifies the authenticated borrower who
+ * owns this application.
  */
 public class LoanApplicationDTO {
     private Integer id;
     private String ref;
+    private String custUserId;
     private String customerName;
     private String customerPhone;
     private String customerEmail;
@@ -46,6 +50,14 @@ public class LoanApplicationDTO {
 
     public void setRef(String ref) {
         this.ref = ref;
+    }
+
+    public String getCustUserId() {
+        return custUserId;
+    }
+
+    public void setCustUserId(String custUserId) {
+        this.custUserId = custUserId;
     }
 
     public String getCustomerName() {

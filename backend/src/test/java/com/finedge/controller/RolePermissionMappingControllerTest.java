@@ -5,13 +5,18 @@ import com.finedge.dto.RolePermissionMappingDTO;
 import com.finedge.exception.DuplicateResourceException;
 import com.finedge.exception.ResourceNotFoundException;
 import com.finedge.service.RolePermissionMappingService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -29,10 +34,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RolePermissionMappingControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private WebApplicationContext webApplicationContext;
 
     @MockBean
     private RolePermissionMappingService mappingService;
+
+    private MockMvc mvc;
+
+    @BeforeEach
+    void init() {
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .defaultRequest(get("/").with(
+                        SecurityMockMvcRequestPostProcessors.user("USR-TEST").roles("USER")))
+                .build();
+    }
 
     private RolePermissionMappingDTO dto(String id) {
         RolePermissionMappingDTO dto = new RolePermissionMappingDTO();
@@ -64,7 +80,8 @@ class RolePermissionMappingControllerTest {
         mvc.perform(post("/api/etfdb/role-mappings")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orgId\":\"ORG-1\",\"roleId\":\"ROLE-1\","
-                                + "\"moduleId\":\"MOD-1\",\"permissionId\":\"PERM-1\"}"))
+                                + "\"moduleId\":\"MOD-1\",\"permissionId\":\"PERM-1\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.mappingId").value("MAP-NEW"));
     }
@@ -79,7 +96,8 @@ class RolePermissionMappingControllerTest {
         mvc.perform(post("/api/etfdb/role-mappings")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orgId\":\"ORG-1\",\"roleId\":\"ROLE-1\","
-                                + "\"moduleId\":\"MOD-1\",\"permissionId\":\"PERM-1\"}"))
+                                + "\"moduleId\":\"MOD-1\",\"permissionId\":\"PERM-1\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isConflict());
     }
 
@@ -88,7 +106,8 @@ class RolePermissionMappingControllerTest {
     void create_InvalidReturns400() throws Exception {
         mvc.perform(post("/api/etfdb/role-mappings")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"orgId\":\"\"}"))
+                        .content("{\"orgId\":\"\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -105,7 +124,8 @@ class RolePermissionMappingControllerTest {
     @Test
     @DisplayName("DELETE /api/etfdb/role-mappings/{id} returns 204")
     void delete_Returns204() throws Exception {
-        mvc.perform(delete("/api/etfdb/role-mappings/MAP-1"))
+        mvc.perform(delete("/api/etfdb/role-mappings/MAP-1")
+                .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isNoContent());
     }
 }

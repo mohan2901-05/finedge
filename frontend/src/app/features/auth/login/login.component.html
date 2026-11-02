@@ -1,0 +1,88 @@
+<div class="auth-page">
+  <header class="auth-header">
+    <div class="shell">
+      <div class="auth-brand">
+        <app-logo [size]="32" variant="dark" aria-label="FinEdge" />
+        <span class="auth-brand__name">FinEdge</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-main">
+    <div class="shell">
+      <div class="auth-card">
+        <div class="auth-card__head">
+          <h1 class="auth-card__title">Sign in</h1>
+          <p class="auth-card__subtitle">
+            Enter your email and password to access your borrower dashboard.
+          </p>
+        </div>
+
+        <form class="auth-form" novalidate (ngSubmit)="onSubmit()">
+          @if (error()) {
+            <div class="alert alert-error" role="alert">{{ error() }}</div>
+          }
+
+          <div class="field">
+            <label class="field-label" for="login-email">
+              Email <span class="required">*</span>
+            </label>
+            <input
+              id="login-email"
+              type="email"
+              [(ngModel)]="form.userEmail"
+              name="userEmail"
+              placeholder="e.g. ravi@example.com"
+              [class.invalid]="(!form.userEmail.trim() || !isEmailValid(form.userEmail)) && submitted()"
+              autocomplete="email"
+            />
+            @if (!form.userEmail.trim() && submitted()) {
+              <span class="field-error">Email is required.</span>
+            }
+            @if (form.userEmail.trim() && !isEmailValid(form.userEmail) && submitted()) {
+              <span class="field-error">Please enter a valid email address.</span>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="login-password">
+              Password <span class="required">*</span>
+            </label>
+            <input
+              id="login-password"
+              type="password"
+              [(ngModel)]="form.password"
+              name="password"
+              placeholder="••••••••"
+              [class.invalid]="!form.password.trim() && submitted()"
+              autocomplete="current-password"
+            />
+            @if (!form.password.trim() && submitted()) {
+              <span class="field-error">Password is required.</span>
+            }
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="loading() || !isFormValid"
+            >
+              @if (loading()) {
+                <span class="btn__spinner" aria-hidden="true"></span>
+                Signing in…
+              } @else {
+                Sign In
+              }
+            </button>
+          </div>
+
+          <p class="auth-form__footer">
+            Don't have an account?
+            <a class="auth-form__link" routerLink="/auth/register">Register</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>

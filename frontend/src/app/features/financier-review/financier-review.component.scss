@@ -1,0 +1,221 @@
+.financier-review {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.financier-review__header {
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  z-index: 40;
+}
+
+.financier-review__header .shell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+}
+
+.financier-review__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.financier-review__brand-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+
+.financier-review__nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.nav-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #334155;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: #0f172a;
+}
+
+.financier-review__main {
+  padding-top: 2rem;
+}
+
+.financier-review__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.financier-review__title-group {
+  max-width: 44rem;
+}
+
+.financier-review__title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+  color: #0f172a;
+}
+
+.financier-review__subtitle {
+  font-size: 1rem;
+  color: #475569;
+  margin: 0;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.facts {
+  margin: 0;
+}
+
+.fact-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f8fafc;
+  font-size: 0.95rem;
+}
+
+.fact-row:last-child {
+  border-bottom: none;
+}
+
+.fact-row--total {
+  border-top: 2px solid #e2e8f0;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.fact__label {
+  color: #64748b;
+}
+
+.fact__value {
+  color: #0f172a;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.badge.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge.status-approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.financier-review__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.decision-note {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0 0 1rem;
+}
+
+.btn-danger {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #fecaca;
+  color: #b91c1c;
+  text-decoration: none;
+}
+
+.btn__spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .financier-review {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .financier-review__header .shell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .financier-review__nav {
+    flex-wrap: wrap;
+  }
+
+  .financier-review__head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fact-row {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .fact__value {
+    white-space: normal;
+  }
+
+  .financier-review__actions {
+    flex-direction: column;
+  }
+}
