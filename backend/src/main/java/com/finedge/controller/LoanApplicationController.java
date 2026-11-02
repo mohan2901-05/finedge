@@ -8,6 +8,7 @@ import com.finedge.service.LoanApplicationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,5 +64,49 @@ public class LoanApplicationController {
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         applicationService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Financier-scoped list: returns the current financier's own applications.
+     * Requires {@code ROLE_FINANCIER_ADMIN} and an associated financier
+     * institution on the user's record.
+     */
+    @GetMapping("/financier")
+    @PreAuthorize("hasAuthority('ROLE_FINANCIER_ADMIN')")
+    public ResponseEntity<PageResponse<LoanApplicationDTO>> listForFinancier(
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(applicationService.listForFinancier(status, page, size));
+    }
+
+    /**
+     * Financier-scoped get: returns a single application owned by the current
+     * financier's institution. Uses 404 (not 403) to avoid leaking existence.
+     */
+    @GetMapping("/financier/{id}")
+    @PreAuthorize("hasAuthority('ROLE_FINANCIER_ADMIN')")
+    public ResponseEntity<LoanApplicationDTO> getByIdForFinancier(@PathVariable Integer id) {
+        return ResponseEntity.ok(applicationService.getByIdForFinancier(id));
+    }
+
+    /**
+     * Approves a {@code Pending Review} application owned by the current
+     * financier's institution. Requires {@code ROLE_FINANCIER_ADMIN}.
+     */
+    @PutMapping("/financier/{id}/approve")
+    @PreAuthorize("hasAuthority('ROLE_FINANCIER_ADMIN')")
+    public ResponseEntity<LoanApplicationDTO> approve(@PathVariable Integer id) {
+        return ResponseEntity.ok(applicationService.approve(id));
+    }
+
+    /**
+     * Rejects a {@code Pending Review} application owned by the current
+     * financier's institution. Requires {@code ROLE_FINANCIER_ADMIN}.
+     */
+    @PutMapping("/financier/{id}/reject")
+    @PreAuthorize("hasAuthority('ROLE_FINANCIER_ADMIN')")
+    public ResponseEntity<LoanApplicationDTO> reject(@PathVariable Integer id) {
+        return ResponseEntity.ok(applicationService.reject(id));
     }
 }

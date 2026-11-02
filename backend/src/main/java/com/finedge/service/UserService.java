@@ -7,6 +7,7 @@ import com.finedge.dto.UserUpdateRequest;
 import com.finedge.entity.Organization;
 import com.finedge.entity.RoleMaster;
 import com.finedge.entity.UserInfo;
+import com.finedge.exception.BusinessRuleException;
 import com.finedge.exception.DuplicateResourceException;
 import com.finedge.exception.ResourceNotFoundException;
 import com.finedge.repository.OrganizationRepository;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +25,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * User records. The stored {@code password} is write-only input kept exactly
- * as received and is never returned, logged, or queried by this service.
- * No hashing, strength enforcement, login, or RBAC enforcement lives here —
- * those require confirmed authentication requirements (see report).
+ * User records. The stored {@code password} is a BCrypt hash: it is write-only
+ * input, hashed before persistence, never returned, logged, or queried by this
+ * service. Authentication (login/verification) lives in {@link
+ * com.finedge.service.AuthService}.
+ *
+ * <p>Registration (self-service) must not trust a client-supplied role or
+ * organisation: those are assigned server-side by {@link AuthService}. This
+ * {@code create} method remains available for authorised administrative user
+ * creation where the caller legitimately supplies an organisation and role.
  */
 @Service
 @Transactional
@@ -36,15 +43,18 @@ public class UserService {
     private final OrganizationRepository organizationRepository;
     private final RoleMasterRepository roleRepository;
     private final StringIdGenerator idGenerator;
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(UserInfoRepository userRepository,
                        OrganizationRepository organizationRepository,
                        RoleMasterRepository roleRepository,
-                       StringIdGenerator idGenerator) {
+                       StringIdGenerator idGenerator,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.organizationRepository = organizationRepository;
         this.roleRepository = roleRepository;
         this.idGenerator = idGenerator;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -85,7 +95,8 @@ public class UserService {
         user.setOrganization(org);
         user.setRole(role);
         user.setUserName(request.getUserName().trim());
-        user.setPassword(request.getPassword());
+        // Route every new password write through the encoder; never store plaintext.
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setUserEmail(request.getUserEmail().trim());
         user.setDob(request.getDob());
         user.setPanNo(request.getPanNo());

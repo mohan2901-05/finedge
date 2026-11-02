@@ -2,8 +2,7 @@
 .sidebar { width: 220px; background: #0f172a; color: #e2e8f0; display: flex; flex-direction: column; padding: 1rem .75rem; gap: 1rem; transition: width .2s; }
 .shell.collapsed .sidebar { width: 64px; }
 .brand { display: flex; align-items: center; gap: .5rem; font-weight: 700; font-size: 1.15rem; }
-.brand-mark { color: var(--primary-light); font-size: 1.5rem; }
-nav { display: flex; flex-direction: column; gap: .25rem; }
+.brand-mark { color: var(--primary-light); font-size: 1.5rem; }nav { display: flex; flex-direction: column; gap: .25rem; }
 .nav-link { display: flex; align-items: center; gap: .6rem; padding: .6rem .75rem; border-radius: 8px; color: #cbd5e1; text-decoration: none; }
 .nav-link:hover { background: rgba(255,255,255,.08); color: #fff; }
 .nav-link.active { background: var(--primary); color: #fff; }

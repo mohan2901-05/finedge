@@ -1,0 +1,133 @@
+<div class="auth-page">
+  <header class="auth-header">
+    <div class="shell">
+      <div class="auth-brand">
+        <app-logo [size]="32" variant="dark" aria-label="FinEdge" />
+        <span class="auth-brand__name">FinEdge</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-main">
+    <div class="shell">
+      <div class="auth-card">
+        <div class="auth-card__head">
+          <h1 class="auth-card__title">Create an account</h1>
+          <p class="auth-card__subtitle">
+            Register as a borrower to apply for loans and track your applications.
+          </p>
+        </div>
+
+        <form class="auth-form" novalidate (ngSubmit)="onSubmit()">
+          @if (error()) {
+            <div class="alert alert-error" role="alert">{{ error() }}</div>
+          }
+
+          @if (success()) {
+            <div class="alert alert-success" role="alert">{{ success() }}</div>
+          }
+
+          <div class="field">
+            <label class="field-label" for="register-name">
+              Full Name <span class="required">*</span>
+            </label>
+            <input
+              id="register-name"
+              type="text"
+              [(ngModel)]="form.userName"
+              name="userName"
+              placeholder="e.g. Ravi Sharma"
+              [class.invalid]="!form.userName.trim() && submitted()"
+              autocomplete="name"
+            />
+            @if (!form.userName.trim() && submitted()) {
+              <span class="field-error">Full name is required.</span>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="register-email">
+              Email <span class="required">*</span>
+            </label>
+            <input
+              id="register-email"
+              type="email"
+              [(ngModel)]="form.userEmail"
+              name="userEmail"
+              placeholder="e.g. ravi@example.com"
+              [class.invalid]="(!form.userEmail.trim() || !isEmailValid(form.userEmail)) && submitted()"
+              autocomplete="email"
+            />
+            @if (!form.userEmail.trim() && submitted()) {
+              <span class="field-error">Email is required.</span>
+            }
+            @if (form.userEmail.trim() && !isEmailValid(form.userEmail) && submitted()) {
+              <span class="field-error">Please enter a valid email address.</span>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="register-password">
+              Password <span class="required">*</span>
+            </label>
+            <input
+              id="register-password"
+              type="password"
+              [(ngModel)]="form.password"
+              name="password"
+              placeholder="••••••••"
+              [class.invalid]="!form.password.trim() && submitted()"
+              autocomplete="new-password"
+            />
+            @if (!form.password.trim() && submitted()) {
+              <span class="field-error">Password is required.</span>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="register-dob">Date of Birth</label>
+            <input
+              id="register-dob"
+              type="date"
+              [(ngModel)]="form.dob"
+              name="dob"
+              autocomplete="bday"
+            />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="register-pan">PAN Number</label>
+            <input
+              id="register-pan"
+              type="text"
+              [(ngModel)]="form.panNo"
+              name="panNo"
+              placeholder="e.g. ABCDE1234F"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="loading() || !isFormValid"
+            >
+              @if (loading()) {
+                <span class="btn__spinner" aria-hidden="true"></span>
+                Creating account…
+              } @else {
+                Create Account
+              }
+            </button>
+          </div>
+
+          <p class="auth-form__footer">
+            Already have an account?
+            <a class="auth-form__link" routerLink="/auth/login">Log in</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>

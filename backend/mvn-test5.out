@@ -1,0 +1,65 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.finedge:finedge-backend >---------------------
+[INFO] Building finedge-backend 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ finedge-backend ---
+[INFO] Deleting D:\projects\finedge\backend\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ finedge-backend ---
+[INFO] Copying 4 resources from src\main\resources to target\classes
+[INFO] Copying 11 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ finedge-backend ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 120 source files with javac [debug release 17] to target\classes
+[INFO] /D:/projects/finedge/backend/src/main/java/com/finedge/security/JwtService.java: D:\projects\finedge\backend\src\main\java\com\finedge\security\JwtService.java uses or overrides a deprecated API.
+[INFO] /D:/projects/finedge/backend/src/main/java/com/finedge/security/JwtService.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ finedge-backend ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ finedge-backend ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 45 source files with javac [debug release 17] to target\test-classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /D:/projects/finedge/backend/src/test/java/com/finedge/service/LoanDisbursementServiceTest.java:[24,19] cannot find symbol
+  symbol:   class MockitoSettings
+  location: package org.mockito
+[ERROR] /D:/projects/finedge/backend/src/test/java/com/finedge/service/LoanDisbursementServiceTest.java:[47,2] cannot find symbol
+  symbol: class MockitoSettings
+[ERROR] /D:/projects/finedge/backend/src/test/java/com/finedge/service/LoanRepaymentServiceTest.java:[23,19] cannot find symbol
+  symbol:   class MockitoSettings
+  location: package org.mockito
+[ERROR] /D:/projects/finedge/backend/src/test/java/com/finedge/service/LoanRepaymentServiceTest.java:[47,2] cannot find symbol
+  symbol: class MockitoSettings
+[INFO] 4 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  25.266 s
+[INFO] Finished at: 2026-10-29T09:10:50+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:testCompile (default-testCompile) on project finedge-backend: Compilation failure: Compilation failure: 
+[ERROR] /D:/projects/finedge/backend/src/test/java/com/finedge/service/LoanDisbursementServiceTest.java:[24,19] cannot find symbol
+[ERROR]   symbol:   class MockitoSettings
+[ERROR]   location: package org.mockito
+[ERROR] /D:/projects/finedge/backend/src/test/java/com/finedge/service/LoanDisbursementServiceTest.java:[47,2] cannot find symbol
+[ERROR]   symbol: class MockitoSettings
+[ERROR] /D:/projects/finedge/backend/src/test/java/com/finedge/service/LoanRepaymentServiceTest.java:[23,19] cannot find symbol
+[ERROR]   symbol:   class MockitoSettings
+[ERROR]   location: package org.mockito
+[ERROR] /D:/projects/finedge/backend/src/test/java/com/finedge/service/LoanRepaymentServiceTest.java:[47,2] cannot find symbol
+[ERROR]   symbol: class MockitoSettings
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -2,16 +2,20 @@ package com.finedge.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+
+import com.finedge.entity.UserInfo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 /**
  * Entity for {@code loan_applications} (loan intake staging table).
  *
@@ -23,10 +27,10 @@ import java.time.LocalDateTime;
  * ({@code 'Pending Review'} default), so it is mapped as {@code String},
  * not an enum.
  *
- * <p>Deliberately no foreign keys: the dump declares none for this table,
- * and no intake→loan relationship is invented (senior Q3). Any workflow
- * linking an intake row to {@code loan_info} must be confirmed before it
- * is modelled.
+ * <p>Part D3: {@code cust_user_id} references {@code user_info.pk_user_id}
+ * to associate each application with its authenticated borrower. Existing
+ * records may have a NULL borrower (no arbitrary ownership is assigned).
+ * No intake→{@code loan_info} relationship is invented (senior Q3).
  */
 @Entity
 @Table(name = "loan_applications")
@@ -90,6 +94,10 @@ public class LoanApplication {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "cust_user_id", nullable = true)
+    private UserInfo borrower;
 
     public LoanApplication() {
     }
@@ -254,5 +262,13 @@ public class LoanApplication {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public UserInfo getBorrower() {
+        return borrower;
+    }
+
+    public void setBorrower(UserInfo borrower) {
+        this.borrower = borrower;
     }
 }

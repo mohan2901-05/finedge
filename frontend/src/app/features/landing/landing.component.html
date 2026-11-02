@@ -1,0 +1,171 @@
+<header class="site-header">
+  <div class="shell">
+    <div class="brand" routerLink="/landing">
+      <app-logo [size]="32" variant="light" aria-label="FinEdge" />
+      <span class="brand__name">FinEdge</span>
+    </div>
+
+    <nav class="site-nav">
+      <a class="nav-link" routerLink="/landing#how-it-works">How it works</a>
+      <a class="nav-link" routerLink="/emi-calculator">EMI calculator</a>
+      <a class="nav-link" routerLink="/landing#benefits">Benefits</a>
+    </nav>
+
+    <a class="btn btn-primary" routerLink="/landing">Get started</a>
+  </div>
+
+  <button class="menu-toggle" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="menu-toggle__line"></span>
+    <span class="menu-toggle__line"></span>
+    <span class="menu-toggle__line"></span>
+  </button>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="shell">
+      <div class="hero__copy">
+        <div class="hero__badge">
+          <span class="badge badge-type">Loan marketplace</span>
+        </div>
+        <h1 class="hero__heading">
+          A marketplace connecting borrowers with financiers.
+        </h1>
+        <p class="hero__lead">
+          FinEdge is intended to help people seeking financing connect with
+          financiers offering funding. Explore indicative terms, estimate your
+          repayments, and understand the application process.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn-primary" routerLink="/borrower">Find a loan</a>
+          <a class="btn btn-secondary" routerLink="/financier">Become a financier</a>
+        </div>
+        <p class="hero__note">
+          Product-intent demonstration. Not a live lending service. No loans are
+          guaranteed and no financing is offered by real institutions here.
+        </p>
+      </div>
+
+      <div class="hero__visual" aria-hidden="true">
+        <div class="product-mock">
+          <div class="product-mock__header">
+            <span class="product-mock__tag">Financing summary</span>
+            <span class="product-mock__label">Estimate</span>
+          </div>
+          <div class="product-mock__body">
+            <div class="product-row">
+              <span class="product-label">Loan amount</span>
+              <span class="product-value">₹5,00,000</span>
+            </div>
+            <div class="product-row">
+              <span class="product-label">Tenure</span>
+              <span class="product-value">24 months</span>
+            </div>
+            <div class="product-row product-row--total">
+              <span class="product-label">Estimated monthly EMI</span>
+              <span class="product-value">₹23,029</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works" class="how-it-works">
+    <div class="shell">
+      <div class="section-head">
+        <h2 class="section__title">How it works</h2>
+        <p class="section__lead">
+          Two journeys, one marketplace. These are intended product flows — not all features are live today.
+        </p>
+      </div>
+
+      <div class="journeys">
+        <div class="journey">
+          <div class="journey__number">01</div>
+          <h3 class="journey__title">Borrower journey</h3>
+          <ul class="journey__steps">
+            <li>Explore financing options and indicative terms.</li>
+            <li>Estimate your monthly repayment with the EMI calculator.</li>
+            <li>Submit a loan application and track its status.</li>
+          </ul>
+        </div>
+
+        <div class="journey">
+          <div class="journey__number">02</div>
+          <h3 class="journey__title">Financier journey</h3>
+          <ul class="journey__steps">
+            <li>Review incoming loan requests.</li>
+            <li>Evaluate proposed terms and applicant details.</li>
+            <li>Manage approved and disbursed financing activity.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="benefits" class="benefits">
+    <div class="shell">
+      <div class="section-head">
+        <h2 class="section__title">Built for the marketplace</h2>
+        <p class="section__lead">
+          FinEdge is designed to bring clarity and structure to loan matching between borrowers and financiers.
+        </p>
+      </div>
+
+      <div class="benefit-grid">
+        <div class="benefit">
+          <h3 class="benefit__title">Indicative terms</h3>
+          <p class="benefit__text">
+            Compare loan amounts, tenures, and rates before applying — no hidden figures.
+          </p>
+        </div>
+        <div class="benefit">
+          <h3 class="benefit__title">Application tracking</h3>
+          <p class="benefit__text">
+            Borrowers can follow their application from submission through review and decision.
+          </p>
+        </div>
+        <div class="benefit">
+          <h3 class="benefit__title">Portfolio oversight</h3>
+          <p class="benefit__text">
+            Financiers can track approved loans, disbursements, and repayments in one place.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="shell">
+      <div class="cta__card">
+        <h2 class="cta__heading">Ready to explore?</h2>
+        <p class="cta__lead">
+          Try the EMI calculator to estimate your repayment, or start as a borrower or financier.
+        </p>
+        <div class="cta__actions">
+          <a class="btn btn-primary" routerLink="/emi-calculator">Try the EMI calculator</a>
+          <a class="btn btn-secondary" routerLink="/borrower">Find a loan</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="shell">
+    <div class="brand">
+      <app-logo [size]="28" variant="light" aria-label="FinEdge" />
+      <span class="brand__name">FinEdge</span>
+    </div>
+    <nav class="footer-nav">
+      <a class="footer-link" routerLink="/landing">Home</a>
+      <a class="footer-link" routerLink="/landing#how-it-works">How it works</a>
+      <a class="footer-link" routerLink="/emi-calculator">EMI calculator</a>
+      <a class="footer-link" routerLink="/landing#benefits">Benefits</a>
+    </nav>
+    <p class="footer__note">
+      FinEdge — product-intent demonstration. Not a live lending service.
+    </p>
+  </div>
+</footer>

@@ -8,11 +8,16 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Self-service loan application creation request.
+ *
+ * <p>Part D4: {@code ref}, {@code emi}, {@code totalInterest}, and
+ * {@code totalPayable} are intentionally absent — these are generated or
+ * calculated on the server and must never be client-supplied.
+ * {@code financierKey} is validated against the {@code financiers} table;
+ * {@code financierLabel} is derived from the authoritative record.
+ */
 public class LoanApplicationCreateRequest {
-
-    @NotBlank(message = "Reference is required")
-    @Size(max = 50, message = "Reference must be at most 50 characters")
-    private String ref;
 
     @NotBlank(message = "Customer name is required")
     @Size(max = 100, message = "Customer name must be at most 100 characters")
@@ -44,7 +49,6 @@ public class LoanApplicationCreateRequest {
     @Size(max = 50, message = "Financier key must be at most 50 characters")
     private String financierKey;
 
-    @NotBlank(message = "Financier label is required")
     @Size(max = 100, message = "Financier label must be at most 100 characters")
     private String financierLabel;
 
@@ -57,25 +61,8 @@ public class LoanApplicationCreateRequest {
     @NotNull(message = "Interest rate is required")
     private BigDecimal interestRate;
 
-    @NotNull(message = "EMI is required")
-    private BigDecimal emi;
-
-    @NotNull(message = "Total interest is required")
-    private BigDecimal totalInterest;
-
-    @NotNull(message = "Total payable is required")
-    private BigDecimal totalPayable;
-
     @Size(max = 30, message = "Status must be at most 30 characters")
     private String status;
-
-    public String getRef() {
-        return ref;
-    }
-
-    public void setRef(String ref) {
-        this.ref = ref;
-    }
 
     public String getCustomerName() {
         return customerName;
@@ -171,30 +158,6 @@ public class LoanApplicationCreateRequest {
 
     public void setInterestRate(BigDecimal interestRate) {
         this.interestRate = interestRate;
-    }
-
-    public BigDecimal getEmi() {
-        return emi;
-    }
-
-    public void setEmi(BigDecimal emi) {
-        this.emi = emi;
-    }
-
-    public BigDecimal getTotalInterest() {
-        return totalInterest;
-    }
-
-    public void setTotalInterest(BigDecimal totalInterest) {
-        this.totalInterest = totalInterest;
-    }
-
-    public BigDecimal getTotalPayable() {
-        return totalPayable;
-    }
-
-    public void setTotalPayable(BigDecimal totalPayable) {
-        this.totalPayable = totalPayable;
     }
 
     public String getStatus() {

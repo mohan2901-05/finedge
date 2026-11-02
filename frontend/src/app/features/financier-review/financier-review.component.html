@@ -1,0 +1,210 @@
+<div class="financier-review">
+  <header class="financier-review__header">
+    <div class="shell">
+      <div class="financier-review__brand">
+        <app-logo [size]="logoSize" aria-label="FinEdge" />
+        <span class="financier-review__brand-name">FinEdge</span>
+      </div>
+      <nav class="financier-review__nav">
+        <a class="nav-link" routerLink="/financier/dashboard">Back to dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="financier-review__main">
+    <div class="shell">
+      @if (loading()) {
+        <app-loading message="Loading application…" />
+      } @else if (error()) {
+        <div class="card">
+          <div class="empty" style="text-align:center; padding: 3rem 1rem;">
+            <h2>{{ error() }}</h2>
+            <button class="btn btn-primary" (click)="retry()">Retry</button>
+            <button class="btn btn-ghost" (click)="backToDashboard()">Back to dashboard</button>
+          </div>
+        </div>
+      } @else if (application()) {
+        <div class="financier-review__head">
+          <div class="financier-review__title-group">
+            <h1 class="financier-review__title">Application Review</h1>
+            <p class="financier-review__subtitle">
+              Reference: <strong>{{ application()?.ref }}</strong>
+            </p>
+          </div>
+          <span class="badge {{ statusBadgeClass(application()?.status ?? '') }}">{{
+            application()?.status
+          }}</span>
+        </div>
+
+        <div class="card facts">
+          <div class="fact-row">
+            <span class="fact__label">Financier</span>
+            <span class="fact__value">{{ application()?.financierLabel }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Customer name</span>
+            <span class="fact__value">{{ application()?.customerName }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Customer email</span>
+            <span class="fact__value">{{ application()?.customerEmail }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Customer phone</span>
+            <span class="fact__value">{{ application()?.customerPhone }}</span>
+          </div>
+          @if (application()?.customerCity) {
+            <div class="fact-row">
+              <span class="fact__label">City</span>
+              <span class="fact__value">{{ application()?.customerCity }}</span>
+            </div>
+          }
+          @if (application()?.customerAddress) {
+            <div class="fact-row">
+              <span class="fact__label">Address</span>
+              <span class="fact__value">{{ application()?.customerAddress }}</span>
+            </div>
+          }
+          <div class="fact-row">
+            <span class="fact__label">Loan amount</span>
+            <span class="fact__value">{{ formatCurrency(application()?.loanAmount ?? 0) }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Interest rate</span>
+            <span class="fact__value">{{ application()?.interestRate }}%</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Tenure</span>
+            <span class="fact__value">{{ application()?.tenureMonths }} months</span>
+          </div>
+          <div class="fact-row fact-row--total">
+            <span class="fact__label">Monthly EMI</span>
+            <span class="fact__value">{{ formatCurrency(application()?.emi ?? 0) }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Total interest</span>
+            <span class="fact__value">{{ formatCurrency(application()?.totalInterest ?? 0) }}</span>
+          </div>
+          <div class="fact-row fact-row--total">
+            <span class="fact__label">Total payable</span>
+            <span class="fact__value">{{ formatCurrency(application()?.totalPayable ?? 0) }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Status</span>
+            <span class="fact__value">{{ application()?.status }}</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact__label">Submitted at</span>
+            <span class="fact__value">{{ application()?.createdAt }}</span>
+          </div>
+        </div>
+
+        @if (canDecide()) {
+          <div class="financier-review__actions">
+            <app-confirm-dialog
+              title="Approve application?"
+              [message]="'Approve application ' + application()?.ref + '? This decision cannot be undone.'"
+              confirmLabel="Approve"
+              (confirmed)="onApprove()"
+              (cancelled)="null"
+            />
+            <app-confirm-dialog
+              title="Reject application?"
+              [message]="'Reject application ' + application()?.ref + '? This decision cannot be undone.'"
+              confirmLabel="Reject"
+              (confirmed)="onReject()"
+              (cancelled)="null"
+            />
+            <button
+              class="btn btn-primary"
+              (click)="onApprove()"
+              [disabled]="deciding()"
+            >
+              @if (deciding()) {
+                <span class="btn__spinner" aria-hidden="true"></span>
+                Approving…
+              } @else {
+                Approve
+              }
+            </button>
+            <button
+              class="btn btn-danger"
+              (click)="onReject()"
+              [disabled]="deciding()"
+            >
+              @if (deciding()) {
+                <span class="btn__spinner" aria-hidden="true"></span>
+                Rejecting…
+              } @else {
+                Reject
+              }
+            </button>
+          </div>
+        }
+
+        @if (canDisburse()) {
+          <div style="padding: 1rem; border-top: 1px solid #f8fafc;">
+            <h3 style="margin: 0 0 0.75rem; font-size: 1rem; font-weight: 700;">Record disbursement</h3>
+            <form (ngSubmit)="submitDisbursement()" style="display: flex; gap: 0.75rem; align-items: flex-end; flex-wrap: wrap;">
+              <label style="display: flex; flex-direction: column; gap: 0.25rem; flex: 1 1 12rem;">
+                <span style="font-size: 0.875rem; font-weight: 500;">Disbursed amount (INR)</span>
+                <input
+                  type="number"
+                  [(ngModel)]="disbursementAmount"
+                  name="disbursementAmount"
+                  min="0.01"
+                  step="0.01"
+                  required
+                  [disabled]="disbursementSubmitting()"
+                  style="padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.95rem;"
+                />
+              </label>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="disbursementSubmitting() || !disbursementAmount"
+                style="padding: 0.5rem 1rem;"
+              >
+                @if (disbursementSubmitting()) {
+                  <span class="btn__spinner" aria-hidden="true"></span>
+                  Submitting…
+                } @else {
+                  Disburse
+                }
+              </button>
+            </form>
+            @if (disbursementFormError()) {
+              <p style="margin: 0.5rem 0 0; color: #b91c1c; font-size: 0.875rem;">{{ disbursementFormError() }}</p>
+            }
+          </div>
+        }
+
+        @if (disbursement()) {
+          <div style="padding: 0.75rem 1rem; border-top: 1px solid #f8fafc; background: #f0fdf4; border-radius: 0 0 12px 12px;">
+            <h3 style="margin: 0 0 0.5rem; font-size: 0.95rem; font-weight: 700; color: #166534;">Disbursement recorded</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.875rem;">
+              <span><strong>Amount:</strong> {{ formatCurrency(disbursement()?.disbursedAmount ?? 0) }}</span>
+              <span><strong>At:</strong> {{ disbursement()?.disbursedAt }}</span>
+              <span><strong>By:</strong> {{ disbursement()?.disbursedByUserId }}</span>
+            </div>
+          </div>
+        }
+
+        @else if (application() && application()?.status === 'Approved') {
+          <div style="padding: 0.75rem 1rem; border-top: 1px solid #f8fafc; background: #fef9c3; border-radius: 0 0 12px 12px;">
+            <h3 style="margin: 0 0 0.5rem; font-size: 0.95rem; font-weight: 700; color: #854d0e;">Disbursement required</h3>
+            <p style="margin: 0; font-size: 0.875rem; color: #854d0e;">This approved loan has not yet been disbursed. A disbursement form will appear here when eligible.</p>
+          </div>
+        } @else if (application()) {
+          <div class="financier-review__actions">
+            <p class="decision-note">
+              No decision available — application is already {{ application()?.status }}.
+            </p>
+            <button class="btn btn-primary" (click)="backToDashboard()">Back to dashboard</button>
+          </div>
+        }
+
+      }
+    </div>
+  </main>
+</div>

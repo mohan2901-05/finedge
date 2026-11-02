@@ -1,12 +1,78 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
+import { WelcomeComponent } from './features/welcome/welcome.component';
+import { LandingComponent } from './features/landing/landing.component';
+import { PlaceholderComponent } from './features/placeholder/placeholder.component';
+import { EmiCalculatorComponent } from './features/emi-calculator/emi-calculator.component';
+import { FinancierDirectoryComponent } from './features/financier-directory/financier-directory.component';
+import { BorrowerComponent } from './features/borrower/borrower.component';
+import { BorrowerDashboardComponent } from './features/borrower/dashboard/dashboard.component';
+import { BorrowerApplicationDetailComponent } from './features/borrower/application-detail/application-detail.component';
+import { FinancierDashboardComponent } from './features/financier-dashboard/financier-dashboard.component';
+import { FinancierReviewComponent } from './features/financier-review/financier-review.component';
+import { RegisterComponent } from './features/auth/register/register.component';
+import { LoginComponent } from './features/auth/login/login.component';
+import { canActivateAuth, canMatchAuth } from './core/auth.guard';
 
 export const routes: Routes = [
+  { path: '', component: WelcomeComponent },
+  { path: 'landing', component: LandingComponent },
+  {
+    path: 'borrower',
+    component: BorrowerComponent,
+    title: 'Borrower Application',
+    canActivate: [canActivateAuth],
+    canMatch: [canMatchAuth],
+  },
+  {
+    path: 'dashboard',
+    component: BorrowerDashboardComponent,
+    title: 'Borrower Dashboard',
+    canActivate: [canActivateAuth],
+    canMatch: [canMatchAuth],
+  },
+  {
+    path: 'dashboard/application/:id',
+    component: BorrowerApplicationDetailComponent,
+    title: 'Application Details',
+    canActivate: [canActivateAuth],
+    canMatch: [canMatchAuth],
+  },
+  {
+    path: 'financier/dashboard',
+    component: FinancierDashboardComponent,
+    title: 'Financier Dashboard',
+    canActivate: [canActivateAuth],
+    canMatch: [canMatchAuth],
+  },
+  {
+    path: 'financier/application/:id',
+    component: FinancierReviewComponent,
+    title: 'Application Review',
+    canActivate: [canActivateAuth],
+    canMatch: [canMatchAuth],
+  },
+  {
+    path: 'financier',
+    component: FinancierDirectoryComponent,
+    title: 'Financier Directory'
+  },
+  {
+    path: 'emi-calculator',
+    component: EmiCalculatorComponent,
+    title: 'EMI Calculator'
+  },
+  {
+    path: 'auth',
+    children: [
+      { path: 'register', component: RegisterComponent, title: 'Register' },
+      { path: 'login', component: LoginComponent, title: 'Sign in' }
+    ]
+  },
   {
     path: '',
     component: LayoutComponent,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'overview' },
       {
         path: 'overview',
         loadComponent: () => import('./features/overview/overview.component').then((m) => m.OverviewComponent),
@@ -139,5 +205,6 @@ export const routes: Routes = [
       },
       { path: '**', redirectTo: 'overview' }
     ]
-  }
+  },
+  { path: '**', redirectTo: '' }
 ];

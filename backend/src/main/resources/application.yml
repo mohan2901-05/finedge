@@ -36,6 +36,24 @@ finedge:
     allowed-headers: "*"
     allow-credentials: true
 
+  # Authentication (Phase 1). Registration assigns only the configured default
+  # borrower role/organisation; client-supplied role/org is never trusted.
+  auth:
+    # Default organisation and borrower role assigned to self-registered users.
+    # Must reference existing org_info.pk_org_id / role_master.pk_role_id.
+    # Defaults to seeded records ORG-T001 and ROLE-T04 for zero-setup / dev mode.
+    default-org-id: ${FINEDGE_AUTH_DEFAULT_ORG_ID:ORG-T001}
+    default-borrower-role-id: ${FINEDGE_AUTH_DEFAULT_BORROWER_ROLE_ID:ROLE-T04}
+
+  # JWT access token configuration.
+  jwt:
+    # Signing key (Base64-encoded, >= 256 bits). NEVER commit a production key.
+    # The value below is a DEVELOPMENT-ONLY placeholder. Production MUST set
+    # FINEDGE_JWT_SECRET to a strong, random Base64 key via environment.
+    secret: ${FINEDGE_JWT_SECRET:ZGV2LXBsYWNlY2hvbGQta2V5LXdoaWNoLXNob3VsZC1iZS1yZXBsYWNlZC1pbi1wcm9kdWN0}
+    expiration-ms: ${FINEDGE_JWT_EXPIRATION_MS:900000}
+    issuer: ${FINEDGE_JWT_ISSUER:finedge}
+
 logging:
   level:
     root: INFO

@@ -52,9 +52,17 @@ public class UserInfo {
     @Column(name = "pan_no", length = 20)
     private String panNo;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "user_role_id", nullable = false)
     private RoleMaster role;
+
+    /**
+     * Optional association to the financier institution this user represents.
+     * Nullable: borrowers and non-financier staff have no financier scope.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "financier_id", nullable = true)
+    private Financier financier;
 
     @Column(name = "status", length = 10, nullable = false)
     private String status = "ACTIVE";
@@ -155,6 +163,14 @@ public class UserInfo {
 
     public void setRole(RoleMaster role) {
         this.role = role;
+    }
+
+    public Financier getFinancier() {
+        return financier;
+    }
+
+    public void setFinancier(Financier financier) {
+        this.financier = financier;
     }
 
     public String getStatus() {

@@ -1,0 +1,290 @@
+.calculator {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.calculator__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.calculator__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: #1d4ed8;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.calculator__back:hover {
+  color: #1e3a8a;
+  text-decoration: underline;
+}
+
+.calculator__title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.calculator__subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0.25rem 0 0;
+}
+
+.calculator__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.required {
+  color: #dc2626;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #ffffff;
+  color: #0f172a;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus {
+  border-color: #1d4ed8;
+  outline: 2px solid #60a5fa;
+  outline-offset: 1px;
+}
+
+input[type="text"][aria-invalid="true"] {
+  border-color: #dc2626;
+}
+
+.field-error {
+  color: #dc2626;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.tenure-toggle {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.tenure-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #334155;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tenure-btn:hover {
+  border-color: #1d4ed8;
+}
+
+.tenure-btn.active {
+  background: #1d4ed8;
+  color: #ffffff;
+  border-color: #1d4ed8;
+}
+
+.tenure-unit {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.btn-reset {
+  align-self: flex-start;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-reset:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.results {
+  margin-top: 2.5rem;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.results__main {
+  text-align: center;
+}
+
+.results__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.results__emi {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.1;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.03em;
+}
+
+.results__note {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.results__breakdown {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.breakdown-item {
+  flex: 1;
+  text-align: center;
+}
+
+.breakdown__label {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.breakdown__value {
+  display: block;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.results__chart {
+  margin-top: 1.5rem;
+}
+
+.chart__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.75rem;
+}
+
+.chart__bar {
+  display: flex;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #f1f5f9;
+  margin-bottom: 0.75rem;
+}
+
+.chart__segment {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.chart__segment--principal {
+  background: #16a34a;
+}
+
+.chart__segment--interest {
+  background: #dc2626;
+}
+
+.chart__legend {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.legend__item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.legend__color {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend__color--principal {
+  background: #16a34a;
+}
+
+.legend__color--interest {
+  background: #dc2626;
+}
+
+.results__disclaimer {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 1.5rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.results--note {
+  text-align: center;
+  color: #64748b;
+}
+
+@media (max-width: 480px) {
+  .calculator {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .results__emi {
+    font-size: 2.25rem;
+  }
+
+  .results__breakdown {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

@@ -10,6 +10,10 @@ import java.time.LocalDate;
  * Intake update. {@code ref} is immutable (unique business key); all other
  * supplied fields are patched. Status changes are plain field updates —
  * no approval workflow is enforced by this API.
+ *
+ * <p>Part D4: {@code emi}, {@code totalInterest}, and {@code totalPayable}
+ * are absent — financial figures are recalculated on the server whenever
+ * principal, interest rate, or tenure changes.
  */
 public class LoanApplicationUpdateRequest {
 
@@ -42,12 +46,6 @@ public class LoanApplicationUpdateRequest {
     private Integer tenureMonths;
 
     private BigDecimal interestRate;
-
-    private BigDecimal emi;
-
-    private BigDecimal totalInterest;
-
-    private BigDecimal totalPayable;
 
     @Size(max = 30, message = "Status must be at most 30 characters")
     private String status;
@@ -138,30 +136,6 @@ public class LoanApplicationUpdateRequest {
 
     public void setInterestRate(BigDecimal interestRate) {
         this.interestRate = interestRate;
-    }
-
-    public BigDecimal getEmi() {
-        return emi;
-    }
-
-    public void setEmi(BigDecimal emi) {
-        this.emi = emi;
-    }
-
-    public BigDecimal getTotalInterest() {
-        return totalInterest;
-    }
-
-    public void setTotalInterest(BigDecimal totalInterest) {
-        this.totalInterest = totalInterest;
-    }
-
-    public BigDecimal getTotalPayable() {
-        return totalPayable;
-    }
-
-    public void setTotalPayable(BigDecimal totalPayable) {
-        this.totalPayable = totalPayable;
     }
 
     public String getStatus() {

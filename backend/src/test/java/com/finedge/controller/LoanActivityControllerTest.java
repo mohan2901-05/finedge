@@ -4,13 +4,18 @@ import com.finedge.dto.LoanActivityStatusDTO;
 import com.finedge.dto.PageResponse;
 import com.finedge.exception.ResourceNotFoundException;
 import com.finedge.service.LoanActivityService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -27,10 +32,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LoanActivityControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private WebApplicationContext webApplicationContext;
 
     @MockBean
     private LoanActivityService activityService;
+
+    private MockMvc mvc;
+
+    @BeforeEach
+    void init() {
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .defaultRequest(get("/").with(
+                        SecurityMockMvcRequestPostProcessors.user("USR-TEST").roles("USER")))
+                .build();
+    }
 
     private LoanActivityStatusDTO dto(String id) {
         LoanActivityStatusDTO dto = new LoanActivityStatusDTO();
@@ -72,7 +88,8 @@ class LoanActivityControllerTest {
         mvc.perform(post("/api/etfdb/loan-activities")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":\"USR-1\",\"loanId\":\"LOAN-1\","
-                                + "\"activityCode\":\"DID\",\"statusCode\":\"D\"}"))
+                                + "\"activityCode\":\"DID\",\"statusCode\":\"D\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.activityId").value("LAS-NEW"));
     }
@@ -82,7 +99,8 @@ class LoanActivityControllerTest {
     void create_InvalidReturns400() throws Exception {
         mvc.perform(post("/api/etfdb/loan-activities")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"activityCode\":\"\",\"statusCode\":\"TOOLONG\"}"))
+                        .content("{\"activityCode\":\"\",\"statusCode\":\"TOOLONG\"}")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isBadRequest());
     }
 }
